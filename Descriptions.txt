@@ -3,3 +3,13 @@ Some descriptions can go here:
 1. To set-up install the OpenCV from source forge
 2. Next, follow the link http://stackoverflow.com/questions/10901905/installing-opencv-2-4-3-in-visual-c-2010-express
 to set up a project in VStudio the dll way.
+
+!!! VC11 is for VS2012
+
+Remove the opencv_haartraining_engined.lib while adding Linker - input -additional dependencies
+and there are some *.lib files missing in the link.. cross check them
+all *.lib files reside in opencv\build\x86\vc12\staticlib
+
+3. Make the project solution platform x64 from win32 (next to debugger)
+
+4. Go to Tools->Options->Debugging->Symbols and select checkbox "Microsoft Symbol Servers", Visual Studio will download PDBs automatically
