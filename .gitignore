@@ -1,2 +1,2 @@
-*.opensdf
-*.sdf
+**/*.opensdf
+**/*.sdf
