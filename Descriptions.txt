@@ -1,1 +1,5 @@
 Some descriptions can go here:
+
+1. To set-up install the OpenCV from source forge
+2. Next, follow the link http://stackoverflow.com/questions/10901905/installing-opencv-2-4-3-in-visual-c-2010-express
+to set up a project in VStudio the dll way.
