@@ -4,7 +4,7 @@ class imReadBasics
 {
 
 public:
-	imReadBasics(void);
+	imReadBasics(std::string path);
 	~imReadBasics(void);
 	cv::Mat im;
 };

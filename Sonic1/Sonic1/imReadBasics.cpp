@@ -7,9 +7,9 @@
 using namespace std;
 using namespace cv;
 
-imReadBasics::imReadBasics(void)
+imReadBasics::imReadBasics(string path)
 {
-	im = imread("C:/Users/Sankar/Desktop/lena.jpg");
+	im = imread(path);
 }
 
 
