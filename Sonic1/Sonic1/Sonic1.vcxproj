@@ -128,8 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="loading.cpp" />
+    <ClCompile Include="imReadBasics.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="openGLTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="imReadBasics.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
