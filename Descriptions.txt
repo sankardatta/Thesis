@@ -12,4 +12,7 @@ all *.lib files reside in opencv\build\x86\vc12\staticlib
 
 3. Make the project solution platform x64 from win32 (next to debugger)
 
-4. Go to Tools->Options->Debugging->Symbols and select checkbox "Microsoft Symbol Servers", Visual Studio will download PDBs automatically
+OpenGL is already in system. But need to download GLFW and GLEW.
+Adding GLFW is easy. But adding GLEW is a pain (trick: move the glew32.lib from lib/release/x64 
+to under lib/)
+

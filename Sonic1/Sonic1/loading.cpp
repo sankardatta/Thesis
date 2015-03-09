@@ -4,7 +4,7 @@
 using namespace cv;
 using namespace std;
 
-int main()
+int mainFunc()
 {
     Mat im = imread("C:/Users/Sankar/Desktop/lena.jpg");
     if (im.empty()) 
