@@ -15,8 +15,16 @@ void main()
 	}
 	else
 	{
-		ob.displayImage("Image", ob.imOrg);
-		//imshow("Image", ob.imOrg);
-		//imshow("Empty", ob.imGry);
+		/*
+		try
+		{
+			ob.displayImage("Image", ob.imOrg);
+		}
+		catch()
+		{
+
+		}*/
+		ob.findCanny();
+		ob.displayImage();
 	}
 }
