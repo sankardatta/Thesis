@@ -39,6 +39,9 @@ void main()
 		double a = intensity[0] + intensity[1];
 		cout<<a;
 		
-		ob.displayImage();
+		geometry g = geometry(ob);
+		//g.findCanny();
+		g.displayImage();
+		//ob.displayImage();
 	}
 }

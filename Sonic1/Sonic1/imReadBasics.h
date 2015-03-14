@@ -11,6 +11,7 @@ private:
 	int lowThreshold, ratio, kernel_size;
 
 public:
+	imReadBasics(void);
 	imReadBasics(std::string path);
 	void displayImage(void);
 	void displayImage(cv::Mat, std::string = "Image");

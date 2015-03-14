@@ -10,6 +10,7 @@ using namespace cv;
 imReadBasics::imReadBasics(string path)
 {
 	imOrg = imread(path);
+	cout<<"imReadBasics object created";
 	//imGry.create(imOrg.size(), imOrg.type());
 }
 
