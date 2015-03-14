@@ -12,7 +12,7 @@ imReadBasics::imReadBasics(string path)
 	//imGry.create(imOrg.size(), imOrg.type());
 }
 
-void imReadBasics::displayImage()
+void imReadBasics::displayImage(void)
 {
 	imshow("imOrg", this->imOrg);
 	imshow("imGry", this->imGry);
@@ -24,7 +24,7 @@ void imReadBasics::displayImage()
 	waitKey(0);
 }
 
-void imReadBasics::displayImage(string name, Mat im)
+void imReadBasics::displayImage(Mat im, string name)
 {
 	imshow(name, im);
 	waitKey(0);

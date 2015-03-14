@@ -13,7 +13,7 @@ private:
 public:
 	imReadBasics(std::string path);
 	void displayImage(void);
-	void displayImage(std::string, cv::Mat);
+	void displayImage(cv::Mat, std::string = "Image");
 	void findCanny();
 	~imReadBasics(void);
 	

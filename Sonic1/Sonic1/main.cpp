@@ -25,16 +25,17 @@ void main()
 		{
 
 		}*/
-		
+		ob.findCanny();
 		string ty =  utils::type2str( ob.imOrg.type() );
-		//printf("%s \n", ty); //Need to print it in C style
+		//printf("%s \n", ty); //Need to print it in C style for printf; Else use cout
 		printf("%s \n", ty.c_str());
 		printf("Matrix: %s %dx%d \n", ty.c_str(), ob.imOrg.cols, ob.imOrg.rows );
-		
+
 		ty =  utils::type2str( ob.imGry.type() );
 		printf("Matrix: %s %dx%d \n", ty.c_str(), ob.imGry.cols, ob.imGry.rows );
-
-		ob.findCanny();
-		ob.displayImage();
+		cv::Scalar intensity = ob.imGry.at<uchar>(250,151);
+		cout<< intensity<<endl;
+		
+		ob.displayImage(ob.imGry);
 	}
 }
