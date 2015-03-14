@@ -1,6 +1,7 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include "imReadBasics.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -25,13 +26,13 @@ void main()
 
 		}*/
 		
-		string ty =  ob.type2str( ob.imOrg.type() );
+		string ty =  utils::type2str( ob.imOrg.type() );
 		//printf("%s \n", ty); //Need to print it in C style
 		printf("%s \n", ty.c_str());
 		printf("Matrix: %s %dx%d \n", ty.c_str(), ob.imOrg.cols, ob.imOrg.rows );
 		
-		ty =  ob.type2str( ob.imGry.type() );
-		printf("%s \n", ty.c_str());
+		ty =  utils::type2str( ob.imGry.type() );
+		printf("Matrix: %s %dx%d \n", ty.c_str(), ob.imGry.cols, ob.imGry.rows );
 
 		ob.findCanny();
 		ob.displayImage();

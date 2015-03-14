@@ -15,7 +15,6 @@ public:
 	void displayImage(void);
 	void displayImage(std::string, cv::Mat);
 	void findCanny();
-	std::string type2str(int);
 	~imReadBasics(void);
 	
 };
