@@ -26,6 +26,7 @@ void main()
 
 		}*/
 		ob.findCanny();
+
 		string ty =  utils::type2str( ob.imOrg.type() );
 		//printf("%s \n", ty); //Need to print it in C style for printf; Else use cout
 		printf("%s \n", ty.c_str());
