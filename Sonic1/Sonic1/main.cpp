@@ -9,9 +9,10 @@ using namespace std;
 
 void main()
 {
+	string path = "C:/Users/Sankar/Desktop/product.png";
 	//Mat im = imread("C:/Users/Sankar/Desktop/lena.jpg");
-	imReadBasics ob = imReadBasics("C:/Users/Sankar/Desktop/product.png");
-	
+	imReadBasics ob = imReadBasics(path);
+
 	if (!ob.imOrg.data) 
 	{
 		cout << "Cannot load image!" << endl;
@@ -22,7 +23,7 @@ void main()
 	{
 		
 		ob.findCanny();
-		
+		/*
 		string ty;
 		ty =  utils::type2str( ob.imOrg.type() );
 		//printf("%s \n", ty); //Need to print it in C style for printf; Else use cout
@@ -31,17 +32,31 @@ void main()
 
 		ty =  utils::type2str( ob.imGry.type() );
 		printf("Matrix: %s %dx%d \n", ty.c_str(), ob.imGry.cols, ob.imGry.rows );
-
+		cout<<ob.imGry.cols * ob.imGry.rows <<endl;
 		cv::Scalar intensity;
 		//cv::Point2d pt = cv::Point2d(251,250);
 		intensity= ob.imOrg.at<uchar>(cv::Point2d(251,250));
 		cout<< intensity<<endl;
 		double a = intensity[0] + intensity[1];
-		cout<<a;
-		
-		geometry g = geometry(ob);
-		//g.findCanny();
-		g.displayImage();
+		cout<<a<<endl;
+		*/
+		geometry g = geometry(path);
+		g.findCanny();
 		//ob.displayImage();
+		
+		g.xLen = 47;
+		g.yLen = 48;
+		int i=1;
+		while (i != 0)
+		{
+			cout<<"Inside While: "<<i<<endl;
+			if (g.containsVal())
+			{
+				cout<<i<<endl;
+				cout<<"Found Edge at: "<<g.sectionNo<<endl;
+			}
+			i = g.computeNextSection();
+		}
+		g.displayImage();
 	}
 }

@@ -7,8 +7,11 @@ public:
 	cv::Mat imGry;
 
 private:
-	cv::Mat imDest, imEdges;
 	int lowThreshold, ratio, kernel_size;
+
+protected:
+	double cols, rows;
+	cv::Mat imDest, imEdges;
 
 public:
 	imReadBasics(void);

@@ -10,7 +10,9 @@ using namespace cv;
 imReadBasics::imReadBasics(string path)
 {
 	imOrg = imread(path);
-	cout<<"imReadBasics object created";
+	cols = imOrg.cols;
+	rows = imOrg.rows;
+	cout<<"imReadBasics object created"<<endl;
 	//imGry.create(imOrg.size(), imOrg.type());
 }
 
@@ -52,6 +54,7 @@ void imReadBasics::findCanny()
 	cvtColor( this->imOrg, this->imGry, CV_BGR2GRAY );
 	blur( imGry, imEdges, Size(3,3) );
 	Canny( imEdges, imEdges, lowThreshold, lowThreshold*ratio, kernel_size );
+	cout<<"Rows: "<<imEdges.rows<<"\n"<<"Cols: "<<imEdges.cols<<endl;
 	imOrg.copyTo(imDest, imEdges);
 }
 
