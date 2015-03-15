@@ -18,6 +18,7 @@ public:
 	void resetCur(void);
 	void setCur(double, double);
 	bool containsVal();
+	void paintMask();
 	int computeNextSection();
 	~geometry(void);
 };
