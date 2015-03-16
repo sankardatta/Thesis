@@ -35,6 +35,14 @@ string utils::type2str(int type)
   return r;
 }
 
+//Print Data of an Image
+string utils::printData(Mat im)
+{
+	string ty;
+	ty =  utils::type2str( im.type() );
+	printf("Matrix: %s %dx%d \n", ty.c_str(), im.cols, im.rows );
+	return ty;
+}
 
 utils::~utils(void)
 {

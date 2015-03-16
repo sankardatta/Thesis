@@ -12,7 +12,6 @@ imReadBasics::imReadBasics(string path)
 	imOrg = imread(path);
 	cols = imOrg.cols;
 	rows = imOrg.rows;
-	cout<<"imReadBasics object created"<<endl;
 	//imGry.create(imOrg.size(), imOrg.type());
 }
 

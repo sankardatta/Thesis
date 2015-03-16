@@ -86,14 +86,13 @@ void geometry::paintMask()
 
 	xLimit = (xCur + xLen) > cols ? (cols - 1) : (xCur + xLen)-1 ;
 	yLimit = (yCur + yLen) > rows ? (rows - 1) : (yCur + yLen)-1 ;
-	cout<<"Inside PaintMask: Section Num:"<<sectionNo<<endl;
 	iterX = xCur;
 	while (iterX<=xLimit)
 	{
 		iterY = yCur;
 		while (iterY<=yLimit)
 		{
-			imGry.at<uchar>(Point2d(iterX, iterY)) = 128;
+			imGry.at<uchar>(Point(iterX, iterY)) = 128;
 			iterY = iterY + 1;
 		}
 		iterX = iterX + 1;
