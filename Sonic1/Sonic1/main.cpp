@@ -9,7 +9,7 @@ using namespace std;
 
 void main()
 {
-	string path = "C:/Users/Sankar/Desktop/product1.png";
+	string path = "C:/Users/Sankar/Desktop/product.png";
 	//Mat im = imread("C:/Users/Sankar/Desktop/lena.jpg");
 	imReadBasics ob = imReadBasics(path);
 
@@ -45,8 +45,8 @@ void main()
 		g.findCanny();
 		//ob.displayImage();
 		
-		g.xLen = 47;
-		g.yLen = 48;
+		g.xLen = 16;
+		g.yLen = 10;
 		int i=1;
 		while (i != 0)
 		{

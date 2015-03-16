@@ -44,6 +44,7 @@ bool geometry:: containsVal()
 			val = imEdges.at<uchar>(Point2d(iterX, iterY));
 			if(val[0] >= 90)
 			{
+				imGry.at<uchar>(Point2d(iterX,iterY))=200;
 				return true;
 			}
 			
@@ -82,18 +83,17 @@ int geometry::computeNextSection()
 void geometry::paintMask()
 {
 	double xLimit, yLimit, iterX, iterY ;
-	Scalar val = Scalar(35,0,0);
 
 	xLimit = (xCur + xLen) > cols ? (cols - 1) : (xCur + xLen)-1 ;
 	yLimit = (yCur + yLen) > rows ? (rows - 1) : (yCur + yLen)-1 ;
-
+	cout<<"Inside PaintMask: Section Num:"<<sectionNo<<endl;
 	iterX = xCur;
 	while (iterX<=xLimit)
 	{
 		iterY = yCur;
 		while (iterY<=yLimit)
 		{
-			imOrg.at<uchar>(iterY, iterX) = 128;
+			imGry.at<uchar>(Point2d(iterX, iterY)) = 128;
 			iterY = iterY + 1;
 		}
 		iterX = iterX + 1;
