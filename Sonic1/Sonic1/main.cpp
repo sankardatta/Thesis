@@ -6,8 +6,48 @@
 #include "geometry.h"
 
 using namespace std;
+using namespace cv;
 
 void main()
+{
+	CvCapture* capture = cvCaptureFromCAM(0);
+	if ( !capture ) 
+	{
+        cout<< "ERROR: capture is NULL" <<endl;
+        getchar();
+		getchar();
+		exit(0);
+    }
+
+	cvNamedWindow( "mywindow", CV_WINDOW_AUTOSIZE );
+
+	while ( 1 ) {
+        // Get one frame
+        IplImage* frame = cvQueryFrame( capture );
+        if ( !frame ) {
+            fprintf( stderr, "ERROR: frame is null...\n" );
+            getchar();
+            break;
+        }
+        cvShowImage( "mywindow", frame );
+        // Do not release the frame!
+
+        if ( (cvWaitKey(10) & 255) == 's' ) {
+            CvSize size = cvGetSize(frame);
+            IplImage* img= cvCreateImage(size, IPL_DEPTH_16S, 1);
+            img = frame;
+             cvSaveImage("C:\\Users\\Sankar\\Desktop\\matteo.jpg", img);
+                                            }
+		if ( (cvWaitKey(10) & 255) == 'e' ) 
+			break;
+    }
+	cvReleaseCapture( &capture );
+    cvDestroyWindow( "mywindow" );
+
+}
+
+
+void mainT()
 {
 	string path = "C:/Users/Sankar/Desktop/product.png";
 	//Mat im = imread("C:/Users/Sankar/Desktop/lena.jpg");

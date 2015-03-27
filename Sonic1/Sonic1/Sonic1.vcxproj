@@ -66,12 +66,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\openCV\opencv\build\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\openCV\opencv\build\x64\vc12\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\opencv\build\x64\vc11\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\openCV\opencv\build\include;E:\thesis\glfw-3.1.bin.WIN64\include;E:\thesis\glew-1.12.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\openCV\opencv\build\x64\vc11\lib;E:\thesis\glfw-3.1.bin.WIN64\lib-vc2012;E:\thesis\glew-1.12.0\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\opencv\build\include;D:\thesis\glew-1.12.0\include;D:\thesis\glfw-3.1.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\opencv\build\x64\vc11\lib;D:\thesis\glew-1.12.0\lib;D:\thesis\glfw-3.1.bin.WIN64\lib-vc2012;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,9 +138,6 @@
     <ClInclude Include="geometry.h" />
     <ClInclude Include="imReadBasics.h" />
     <ClInclude Include="utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
