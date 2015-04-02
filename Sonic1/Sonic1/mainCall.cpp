@@ -4,11 +4,14 @@
 #include "imReadBasics.h"
 #include "utils.h"
 #include "geometry.h"
+#include "openGLBasics.h"
 
 using namespace std;
 using namespace cv;
 
-void main()
+
+
+void takeImage()
 {
 	CvCapture* capture = cvCaptureFromCAM(0);
 	if ( !capture ) 
@@ -20,6 +23,11 @@ void main()
     }
 
 	cvNamedWindow( "mywindow", CV_WINDOW_AUTOSIZE );
+	double w = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH);
+	double h = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT);
+	cout<<"Width: " <<w<<"\nHeight: "<< h << endl;
+	cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 1280);
+	cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 960);
 
 	while ( 1 ) {
         // Get one frame
@@ -99,4 +107,10 @@ void mainT()
 		}
 		g.displayImage();
 	}
+}
+
+void main()
+{
+    openGLBasics ob = openGLBasics();
+    ob.mainGL();
 }
