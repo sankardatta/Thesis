@@ -19,11 +19,12 @@ openGLBasics::~openGLBasics(void)
 
 void openGLBasics::mainGL()
 {
+    //glfw
     glfwInit();
-    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", nullptr, nullptr);
-    glfwMakeContextCurrent(window); 
-    //GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", glfwGetPrimaryMonitor(), nullptr); //Fullsreen
+    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", nullptr, nullptr);  //GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", glfwGetPrimaryMonitor(), nullptr); //Fullsreen
+    glfwMakeContextCurrent(window);
 
+    //glew
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     
@@ -37,7 +38,7 @@ void openGLBasics::mainGL()
                         -0.5f, -0.5f  
                         };
     GLuint vbo;
-    
+
     try 
     {
         cout << "Generating VBO"<< endl;
@@ -59,19 +60,17 @@ void openGLBasics::mainGL()
         cout<<e.what()<<endl;
     }
     
-    /*
-    glfwMakeContextCurrent(window);
-    
+        
     while(!glfwWindowShouldClose(window))
     {
         glBegin(GL_LINES);
-        glVertex2f(10.0, 10.0);
-        glVertex2f(50.0, 50.0);
+        glVertex3f(10.0, 10.0, 0.0);
+        glVertex3f(50.0, 50.0, 0.0);
         glEnd();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    */
+    
     std::this_thread::sleep_for(std::chrono::seconds(5));
 	glfwTerminate();
 
