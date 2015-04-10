@@ -42,7 +42,7 @@ GLuint openGLBasics::compileShaders(GLuint mode, string& str)
     glCompileShader(shader);
     char error[1000];
     glGetShaderInfoLog(shader, 1000, NULL, error);
-    cout << "Shader " <<mode << " compile message: " << error <<endl;
+    cout << "Shader " <<mode << " \n Compile message: " << error <<endl;
     return shader;
 }
 
@@ -58,7 +58,7 @@ void openGLBasics::initShaders(const char* vshader, const char* fshader)
     program = glCreateProgram();
     glAttachShader(program, vs);
     glAttachShader(program, fs);
-    glBindFragDataLocation(program, 0, "outColor");
+    //glBindFragDataLocation(program, 0, "outColor");
     glLinkProgram(program);
     glUseProgram(program);
 }
@@ -87,10 +87,12 @@ void openGLBasics::mainGL()
     GLenum err = glewInit();
     
     if(err!=GLEW_OK)
-    {
-        std::cout << "glewInit failed, aborting. Code " << err << ". " << std::endl;
-    }
+        cout << "glewInit failed, aborting. Code " << err << ". " << endl;
     
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -101,31 +103,32 @@ void openGLBasics::mainGL()
     glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(posAttrib);
     
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    
     
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(window);
     
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    glfwSwapBuffers(window);
+
+    //while(!glfwWindowShouldClose(window))
+    //{
+    //      glDrawArrays(GL_TRIANGLES, 0, 3);
+    //    //glClear(GL_COLOR_BUFFER_BIT);
+    //    //glColor3f(1.0, 0.0, 0.0);
+    //    /*glBegin(GL_LINES);
+    //        glVertex2f(180.0, 10.0);
+    //        glVertex2f(50.0, 150.0);
+    //    glEnd();*/
+    //    glFlush();
+    //    glfwSwapBuffers(window);
+    //    glfwPollEvents();
+    //    break;
+    //}
     
-    while(!glfwWindowShouldClose(window))
-    {
-          glDrawArrays(GL_TRIANGLES, 0, 3);
-        //glClear(GL_COLOR_BUFFER_BIT);
-        //glColor3f(1.0, 0.0, 0.0);
-        /*glBegin(GL_LINES);
-            glVertex2f(180.0, 10.0);
-            glVertex2f(50.0, 150.0);
-        glEnd();*/
-        glFlush();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-        break;
-    }
-    
-    std::this_thread::sleep_for(std::chrono::seconds(7));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
     clean();
 	glfwTerminate();
 
