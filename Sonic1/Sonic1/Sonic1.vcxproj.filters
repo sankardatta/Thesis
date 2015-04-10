@@ -45,4 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="colorShaderOne.fsh">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="positionShaderOne.vsh">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

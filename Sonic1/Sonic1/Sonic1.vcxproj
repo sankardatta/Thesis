@@ -142,6 +142,10 @@
     <ClInclude Include="openGLBasics.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="colorShaderOne.fsh" />
+    <None Include="positionShaderOne.vsh" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

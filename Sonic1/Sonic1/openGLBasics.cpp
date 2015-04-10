@@ -1,8 +1,8 @@
 #define GLEW_STATIC
 #include <iostream>
 #include <thread>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <string>
+#include <fstream>
 #include "openGLBasics.h"
 
 using namespace std;
@@ -17,8 +17,66 @@ openGLBasics::~openGLBasics(void)
 {
 }
 
+void openGLBasics::loadShaders(const char* fn, string& str)
+{
+    ifstream inFile(fn);
+    if(!inFile.is_open())
+    {
+        cout << "File " << fn << " could not be opened !!!" <<endl;
+        return;
+    }
+    char tmp[300];
+    while(!inFile.eof())
+    {
+        inFile.getline(tmp, 300);
+        str = str + tmp;
+        str = str + '\n';
+    }
+}
+
+GLuint openGLBasics::compileShaders(GLuint mode, string& str)
+{
+    const GLchar* source= str.c_str();
+    GLuint shader = glCreateShader(mode);
+    glShaderSource(shader, 1, &source, NULL);
+    glCompileShader(shader);
+    char error[1000];
+    glGetShaderInfoLog(shader, 1000, NULL, error);
+    cout << "Shader " <<mode << " compile message: " << error <<endl;
+    return shader;
+}
+
+void openGLBasics::initShaders(const char* vshader, const char* fshader)
+{
+    string source;
+    loadShaders(vshader, source);
+    vs = compileShaders(GL_VERTEX_SHADER, source);
+    source = "";
+    loadShaders(fshader, source);
+    fs = compileShaders(GL_FRAGMENT_SHADER, source);
+
+    program = glCreateProgram();
+    glAttachShader(program, vs);
+    glAttachShader(program, fs);
+    glBindFragDataLocation(program, 0, "outColor");
+    glLinkProgram(program);
+    glUseProgram(program);
+}
+
+void openGLBasics::clean()
+{
+    glDetachShader(program, vs);
+    glDetachShader(program, fs);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+    glDeleteProgram(program);
+}
 void openGLBasics::mainGL()
 {
+    float vertices[] = { 0.0f,  0.5f, // Vertex 1 (X, Y)
+                        0.5f, -0.5f, 
+                        -0.5f, -0.5f  
+                        };
     //glfw
     glfwInit();
     GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", nullptr, nullptr);  //GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", glfwGetPrimaryMonitor(), nullptr); //Fullsreen
@@ -33,45 +91,42 @@ void openGLBasics::mainGL()
         std::cout << "glewInit failed, aborting. Code " << err << ". " << std::endl;
     }
     
-    float vertices[] = { 0.0f,  0.5f, // Vertex 1 (X, Y)
-                        0.5f, -0.5f, 
-                        -0.5f, -0.5f  
-                        };
     GLuint vbo;
-
-    try 
-    {
-        cout << "Generating VBO"<< endl;
-        glGenBuffers(1, &vbo);
-        cout << "Generated VBO: "<< vbo<< endl;
-    }
-    catch(exception& e)
-    {
-        cout<< e.what()<< endl;
-    }
-
-    try 
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    }
-    catch(exception& e)
-    {
-        cout<<e.what()<<endl;
-    }
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); 
     
-        
+    initShaders("positionShaderOne.vsh", "colorShaderOne.fsh");
+    GLint posAttrib = glGetAttribLocation(program, "position");
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(posAttrib);
+    
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    //glDrawArrays(GL_TRIANGLES, 0, 3);
+    
     while(!glfwWindowShouldClose(window))
     {
-        glBegin(GL_LINES);
-        glVertex3f(10.0, 10.0, 0.0);
-        glVertex3f(50.0, 50.0, 0.0);
-        glEnd();
+          glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glClear(GL_COLOR_BUFFER_BIT);
+        //glColor3f(1.0, 0.0, 0.0);
+        /*glBegin(GL_LINES);
+            glVertex2f(180.0, 10.0);
+            glVertex2f(50.0, 150.0);
+        glEnd();*/
+        glFlush();
         glfwSwapBuffers(window);
         glfwPollEvents();
+        break;
     }
     
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(7));
+    clean();
 	glfwTerminate();
 
 }
