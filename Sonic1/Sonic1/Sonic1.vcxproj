@@ -70,7 +70,7 @@
     <LibraryPath>D:\opencv\build\x64\vc11\lib;D:\thesis\glew-1.12.0\lib;D:\thesis\glfw-3.1.bin.WIN64\lib-vc2012;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\opencv\build\include;D:\thesis\glfw-3.1.bin.WIN64\include;D:\thesis\glew-1.12.0-win32\glew-1.12.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\opencv\build\include;D:\thesis\glfw-3.1.bin.WIN64\include;D:\thesis\glew-1.12.0-win32\glew-1.12.0\include;D:\thesis\glm;$(IncludePath)</IncludePath>
     <LibraryPath>D:\opencv\build\x64\vc11\lib;D:\thesis\glfw-3.1.bin.WIN64\lib-vc2012;D:\thesis\glew-1.12.0-win32\glew-1.12.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

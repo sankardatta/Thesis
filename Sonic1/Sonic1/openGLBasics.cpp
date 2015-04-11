@@ -4,12 +4,14 @@
 #include <string>
 #include <fstream>
 #include "openGLBasics.h"
+#include <glm/fwd.hpp>
+
 
 using namespace std;
 
 openGLBasics::openGLBasics(void)
 {
-    cout<<"Inside GLBasics."<< endl;
+    cout <<"Inside GLBasics." <<endl;
 }
 
 
@@ -105,25 +107,28 @@ void openGLBasics::mainGL()
     
     
     
-    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.2f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glfwSwapBuffers(window);
-    
+
+    glClear(GL_COLOR_BUFFER_BIT );
     glDrawArrays(GL_TRIANGLES, 0, 3);
     std::this_thread::sleep_for(std::chrono::seconds(2));
     glfwSwapBuffers(window);
-
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    
     //while(!glfwWindowShouldClose(window))
     //{
-    //      glDrawArrays(GL_TRIANGLES, 0, 3);
-    //    //glClear(GL_COLOR_BUFFER_BIT);
-    //    //glColor3f(1.0, 0.0, 0.0);
-    //    /*glBegin(GL_LINES);
-    //        glVertex2f(180.0, 10.0);
-    //        glVertex2f(50.0, 150.0);
-    //    glEnd();*/
-    //    glFlush();
-    //    glfwSwapBuffers(window);
+    //    //glDrawArrays(GL_TRIANGLES, 0, 3);
+    //    glClear(GL_COLOR_BUFFER_BIT);
+    //    glColor3f(1.0, 0.0, 0.0);
+        glBegin(GL_TRIANGLES);
+            glVertex2f(0.5, 0.3);
+            glVertex2f(0.3, 0.1);
+            glVertex2f(0.75, 0.9);
+        glEnd();
+        //glFlush();
+        glfwSwapBuffers(window);
     //    glfwPollEvents();
     //    break;
     //}
@@ -131,5 +136,4 @@ void openGLBasics::mainGL()
     std::this_thread::sleep_for(std::chrono::seconds(3));
     clean();
 	glfwTerminate();
-
 }
