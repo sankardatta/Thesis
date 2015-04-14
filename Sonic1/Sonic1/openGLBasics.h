@@ -17,5 +17,6 @@ public:
 
 public:
     GLuint vs, fs, program;
+    GLFWwindow* window;
 };
 

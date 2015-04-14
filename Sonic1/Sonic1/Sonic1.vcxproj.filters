@@ -52,5 +52,13 @@
     <None Include="positionShaderOne.vsh">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="cube.vsh">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="positionShaderTwo.vsh">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

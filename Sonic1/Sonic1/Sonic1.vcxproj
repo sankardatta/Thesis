@@ -144,7 +144,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="colorShaderOne.fsh" />
+    <None Include="cube.vsh" />
     <None Include="positionShaderOne.vsh" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="positionShaderTwo.vsh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
