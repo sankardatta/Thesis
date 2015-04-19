@@ -8,6 +8,8 @@ class openGLBasics
 private:
     void loadShaders(const char*, string&);
     GLuint compileShaders(GLuint, string&);
+    void drawFromElement(void);
+
 public:
     openGLBasics(void);
     void mainGL(void);
