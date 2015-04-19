@@ -9,8 +9,10 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <SOIL.h>
 
 using namespace std;
+
 
 openGLBasics::openGLBasics(void)
 {
@@ -136,6 +138,9 @@ void openGLBasics::drawFromElement()
 }
 void openGLBasics::mainGL()
 {
+    int width, height;
+    unsigned char* image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\1.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+    cout <<"Image Width: " <<width <<endl << "Image height: "<< height<< endl;
     float vertices[] = { 0.0f,  0.5f, // Vertex 1 (X, Y)
                         0.5f, -0.5f, 
                         -0.5f, -0.5f  
