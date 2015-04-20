@@ -146,6 +146,8 @@
     <None Include="colorShaderOne.fsh" />
     <None Include="cube.vsh" />
     <None Include="positionShaderOne.vsh" />
+    <None Include="texture.fsh" />
+    <None Include="texture.vsh" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="positionShaderTwo.vsh" />

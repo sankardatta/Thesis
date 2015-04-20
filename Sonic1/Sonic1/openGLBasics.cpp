@@ -92,6 +92,59 @@ void openGLBasics::clean()
     glDeleteProgram(program);
 }
 
+void openGLBasics::drawTexture()
+{
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    
+    // Set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height;
+    unsigned char* image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\woodenBox.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLfloat vertices[] = {
+                        // Positions          // Colors           // Texture Coords
+                         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
+                         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
+                        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
+                        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left 
+                        };
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    initShaders("texture.vsh", "texture.fsh");
+    GLint posAttrib = glGetAttribLocation(program, "position");
+    GLint color = glGetAttribLocation(program, "color");
+    GLint texCoord = glGetAttribLocation(program, "texCoord");
+    GLint ourTexture = glGetUniformLocation(program, "ourTexture");
+
+    glVertexAttribPointer(posAttrib, 3, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(color, 3, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(texCoord, 2, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(posAttrib);
+    glEnableVertexAttribArray(color);
+    glEnableVertexAttribArray(texCoord);
+
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glDrawArrays(GL_QUADS, 0, 4);
+    glfwSwapBuffers(window);
+}
+
 void openGLBasics::drawFromElement()
 {
     GLuint VAO;
@@ -136,6 +189,7 @@ void openGLBasics::drawFromElement()
     glBindVertexArray(0);
     glfwSwapBuffers(window);
 }
+
 void openGLBasics::mainGL()
 {
     int width, height;
@@ -262,6 +316,8 @@ void openGLBasics::mainGL()
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     drawFromElement();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    drawTexture();
 
     //Cube
     

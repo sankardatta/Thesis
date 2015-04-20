@@ -9,6 +9,7 @@ private:
     void loadShaders(const char*, string&);
     GLuint compileShaders(GLuint, string&);
     void drawFromElement(void);
+    void drawTexture(void);
 
 public:
     openGLBasics(void);
