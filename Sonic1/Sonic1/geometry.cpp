@@ -35,7 +35,7 @@ bool geometry:: containsVal()
 	}
 
 	iterX = xCur;
-	while (iterX<=xLimit)
+	while (iterX <= xLimit)
 	{
 		iterY = yCur;
 		while (iterY<=yLimit)
@@ -44,7 +44,7 @@ bool geometry:: containsVal()
 			val = imEdges.at<uchar>(Point2d(iterX, iterY));
 			if(val[0] >= 90)
 			{
-				imGry.at<uchar>(Point2d(iterX,iterY))=200;
+				//imGry.at<uchar>(Point2d(iterX,iterY))=200;
 				return true;
 			}
 			

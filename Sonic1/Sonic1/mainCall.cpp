@@ -74,7 +74,6 @@ void mainT()
 		string ty;
 		
 		ty =  utils::type2str( ob.imOrg.type() );
-		//printf("%s \n", ty); //Need to print it in C style for printf; Else use cout
 		printf("%s \n", ty.c_str());
 		printf("Matrix: %s %dx%d \n", ty.c_str(), ob.imOrg.cols, ob.imOrg.rows );
 		
@@ -89,7 +88,7 @@ void mainT()
 		double a = intensity[0] + intensity[1];
 		cout<<a<<endl;
 		*/
-		geometry g = geometry(path);
+        geometry g = geometry(path);
 		g.findCanny();
 		//ob.displayImage();
 		
@@ -105,13 +104,15 @@ void mainT()
 			}
 			i = g.computeNextSection();
 		}
-		g.displayImage();
+		//g.displayImage();
+        //g.HoughTransformForCircles();
+        g.getGLImage();
 	}
 }
 
 void main()
 {
-    //mainT();
-    openGLBasics ob = openGLBasics();
-    ob.mainGL();
+    mainT();
+    //openGLBasics ob = openGLBasics();
+    //ob.mainGL();
 }

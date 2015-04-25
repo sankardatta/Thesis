@@ -3,8 +3,6 @@
 #include <thread>
 #include <string>
 #include <fstream>
-#include "opencv2/imgproc/imgproc.hpp"
-#include <opencv2/highgui/highgui.hpp>
 #include <malloc.h>
 #include "openGLBasics.h"
 #include <glm/fwd.hpp>
@@ -195,7 +193,7 @@ void openGLBasics::drawFromElement()
     glfwSwapBuffers(window);
 }
 
-void openGLBasics::mainGL()
+Mat openGLBasics::mainGL(double rows, double cols)
 {
     int width, height;
     unsigned char* image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\1.jpg", &width, &height, 0, SOIL_LOAD_RGB);
@@ -323,137 +321,30 @@ void openGLBasics::mainGL()
     drawFromElement();
     std::this_thread::sleep_for(std::chrono::seconds(1));
     drawTexture();
-    int h = 480;
-    int w = 640;
+    int h = rows;
+    int w = cols;
     GLubyte * bits;
     //GLvoid *bits = malloc(3 * 640 * 480);
     bits = new GLubyte[w*3*h]; 
     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, bits);
-    
+    //Mat matIm(h, w, CV_16UC1);
     IplImage * capImg = cvCreateImage( cvSize(w,h), IPL_DEPTH_8U, 3);
-    for(int i=0; i < 480; ++i)  
+    for(int i=0; i < h; ++i)  
     {  
-    for(int j=0; j < 640; ++j)  
-    {  
-    capImg->imageData[i*capImg->widthStep + j*3+0] = (unsigned char)(bits[(h-i-1)*3*w + j*3+0]);  
-    capImg->imageData[i*capImg->widthStep + j*3+1] = (unsigned char)(bits[(h-i-1)*3*w + j*3+1]);  
-    capImg->imageData[i*capImg->widthStep + j*3+2] = (unsigned char)(bits[(h-i-1)*3*w + j*3+2]);  
-    }  
-    }  
-  
-    cvSaveImage("C:\\Users\\Sankar\\Desktop\\resultGL.jpg",capImg);   
-    cvReleaseImage(&capImg);   
+        for(int j=0; j < w; ++j)  
+        {  
+            capImg->imageData[i*capImg->widthStep + j*3+0] = (unsigned char)(bits[(h-i-1)*3*w + j*3+0]);
+            //matIm.at<uchar>(Point(i - 1, j - 1)) = (unsigned char)(bits[(h-i-1)*3*w + j*3+0]); //i-1 as for loop i starts at 1 but Mat index starts at 0
+            capImg->imageData[i*capImg->widthStep + j*3+1] = (unsigned char)(bits[(h-i-1)*3*w + j*3+1]);  
+            capImg->imageData[i*capImg->widthStep + j*3+2] = (unsigned char)(bits[(h-i-1)*3*w + j*3+2]);  
+        }  
+    }
+    cout<<"Converting to Mat"<<endl;
+    Mat matIm(capImg);
+    imwrite("C:\\Users\\Sankar\\Desktop\\resultmatGL.jpg",matIm);
+    //cvSaveImage("C:\\Users\\Sankar\\Desktop\\resultGL.jpg",capImg);
+    //cvReleaseImage(&capImg);   
     delete[] bits;
-
-    //Cube
-    
-    //float cubeVerts[] = { 0.0f,  0.0f, 0.0f,
-    //                 1.0f,  0.0f, 0.0f,
-    //                 1.0f,  1.0f, 0.0f,
-    //                 0.0f,  1.0f, 0.0f,
-    //                 1.0f,  0.0f, 1.0f,
-    //                 1.0f,  1.0f, 1.0f,
-    //                 0.0f,  1.0f, 1.0f,
-    //                 0.0f,  1.0f, 0.0f
-    //                    };
-    //float cubeColor[] = { 0.0f,  0.0f, 0.0f,
-    //                    1.0f,  0.0f, 0.0f,
-    //                    1.0f,  1.0f, 0.0f,
-    //                    0.0f,  1.0f, 0.0f,
-    //                    1.0f,  0.0f, 1.0f,
-    //                    1.0f,  1.0f, 1.0f,
-    //                    0.0f,  1.0f, 1.0f,
-    //                    0.0f,  1.0f, 0.0f
-    //                    };
-    //GLuint vao;
-    //glGenVertexArrays(1, &vao);
-    //GLuint cubeVbo;
-    //glGenBuffers(1, &cubeVbo);
-    //glBindVertexArray(vao);
-    //glBindBuffer(GL_ARRAY_BUFFER, cubeVbo);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVerts), cubeVerts, GL_STATIC_DRAW);
-    //
-
-    //initShaders("cube.vsh", "colorShaderOne.fsh");
-    //posAttrib = glGetAttribLocation(program, "position");
-    //glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    //glEnableVertexAttribArray(posAttrib);
-
-    //glClear(GL_COLOR_BUFFER_BIT );
-    //glEnableClientState(GL_VERTEX_ARRAY);
-    //glVertexPointer(3, GL_FLOAT, 0, cubeVerts);
-    ////glColorPointer(3, GL_FLOAT, 0, cubeColor);
-    //cout <<"Initialized" <<endl;
-    ////std::this_thread::sleep_for(std::chrono::seconds(5));
-    //glBegin(GL_TRIANGLES);
-    //    glArrayElement(3);
-    //    glArrayElement(1);
-    //    glArrayElement(2);
-    //glEnd();
-    //glBindVertexArray(0);
-    //glfwSwapBuffers(window);
-    //std::this_thread::sleep_for(std::chrono::seconds(2));
-    
-    //GLuint vao;
-    //glGenVertexArrays(1, &vao);
-    //glBindVertexArray(vao);
-    //glEnableClientState(GL_VERTEX_ARRAY);
-    //GLfloat g_vertex_buffer_data[] = { -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-    //                                                -1.0f,-1.0f, 1.0f,
-    //                                                -1.0f, 1.0f, 1.0f, // triangle 1 : end
-    //                                                 1.0f, 1.0f,-1.0f, // triangle 2 : begin
-    //                                                -1.0f,-1.0f,-1.0f,
-    //                                                -1.0f, 1.0f,-1.0f, // triangle 2 : end
-    //                                                 1.0f,-1.0f, 1.0f,
-    //                                                -1.0f,-1.0f,-1.0f,
-    //                                                 1.0f,-1.0f,-1.0f,
-    //                                                 1.0f, 1.0f,-1.0f,
-    //                                                 1.0f,-1.0f,-1.0f,
-    //                                                -1.0f,-1.0f,-1.0f,
-    //                                                -1.0f,-1.0f,-1.0f,
-    //                                                -1.0f, 1.0f, 1.0f,
-    //                                                -1.0f, 1.0f,-1.0f,
-    //                                                 1.0f,-1.0f, 1.0f,
-    //                                                -1.0f,-1.0f, 1.0f,
-    //                                                -1.0f,-1.0f,-1.0f,
-    //                                                -1.0f, 1.0f, 1.0f,
-    //                                                -1.0f,-1.0f, 1.0f,
-    //                                                 1.0f,-1.0f, 1.0f,
-    //                                                 1.0f, 1.0f, 1.0f,
-    //                                                 1.0f,-1.0f,-1.0f,
-    //                                                 1.0f, 1.0f,-1.0f,
-    //                                                 1.0f,-1.0f,-1.0f,
-    //                                                 1.0f, 1.0f, 1.0f,
-    //                                                 1.0f,-1.0f, 1.0f,
-    //                                                 1.0f, 1.0f, 1.0f,
-    //                                                 1.0f, 1.0f,-1.0f,
-    //                                                -1.0f, 1.0f,-1.0f,
-    //                                                 1.0f, 1.0f, 1.0f,
-    //                                                -1.0f, 1.0f,-1.0f,
-    //                                                -1.0f, 1.0f, 1.0f,
-    //                                                 1.0f, 1.0f, 1.0f,
-    //                                                -1.0f, 1.0f, 1.0f,
-    //                                                 1.0f,-1.0f, 1.0f
-    //                                            };
-    //for(int i = 0; i < sizeof(g_vertex_buffer_data)/sizeof(g_vertex_buffer_data[0]); i++)
-    //    g_vertex_buffer_data[i] = g_vertex_buffer_data[i] / 2.0f;
-
-    //GLuint cube;
-    //glGenBuffers(1, &cube);
-    //glBindBuffer(GL_ARRAY_BUFFER, cube);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-    //initShaders("cube.vsh", "colorShaderOne.fsh");
-    //posAttrib = glGetAttribLocation(program, "position");
-    //glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    //glEnableVertexAttribArray(posAttrib);
-    //glBindVertexArray(vao);
-    ////glEnable(GL_DEPTH_TEST);
-    ////glDepthFunc(GL_LESS);
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glDrawArrays(GL_TRIANGLES, 0, 12*3);
-    //glfwSwapBuffers(window);
-    std::getchar();
-    //std::this_thread::sleep_for(std::chrono::seconds(10));
-    
+    return(matIm);
+    //std::getchar();
 }

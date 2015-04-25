@@ -1,8 +1,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/highgui/highgui.hpp>
 #pragma once
 
 using namespace std;
+using namespace cv;
+
 class openGLBasics
 {
 private:
@@ -13,7 +17,7 @@ private:
 
 public:
     openGLBasics(void);
-    void mainGL(void);
+    Mat mainGL(double rows, double cols);
     void initShaders(const char*, const char*);
     void clean(void);
     ~openGLBasics(void);
