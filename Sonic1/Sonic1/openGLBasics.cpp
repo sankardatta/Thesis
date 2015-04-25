@@ -3,6 +3,9 @@
 #include <thread>
 #include <string>
 #include <fstream>
+#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <malloc.h>
 #include "openGLBasics.h"
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
@@ -12,7 +15,7 @@
 #include <SOIL.h>
 
 using namespace std;
-
+using namespace cv;
 
 openGLBasics::openGLBasics(void)
 {
@@ -110,8 +113,10 @@ void openGLBasics::drawTexture()
 
     int width, height;
     unsigned char* image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\woodenBox.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+    
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
+    
     SOIL_free_image_data(image);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -318,6 +323,27 @@ void openGLBasics::mainGL()
     drawFromElement();
     std::this_thread::sleep_for(std::chrono::seconds(1));
     drawTexture();
+    int h = 480;
+    int w = 640;
+    GLubyte * bits;
+    //GLvoid *bits = malloc(3 * 640 * 480);
+    bits = new GLubyte[w*3*h]; 
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, bits);
+    
+    IplImage * capImg = cvCreateImage( cvSize(w,h), IPL_DEPTH_8U, 3);
+    for(int i=0; i < 480; ++i)  
+    {  
+    for(int j=0; j < 640; ++j)  
+    {  
+    capImg->imageData[i*capImg->widthStep + j*3+0] = (unsigned char)(bits[(h-i-1)*3*w + j*3+0]);  
+    capImg->imageData[i*capImg->widthStep + j*3+1] = (unsigned char)(bits[(h-i-1)*3*w + j*3+1]);  
+    capImg->imageData[i*capImg->widthStep + j*3+2] = (unsigned char)(bits[(h-i-1)*3*w + j*3+2]);  
+    }  
+    }  
+  
+    cvSaveImage("C:\\Users\\Sankar\\Desktop\\resultGL.jpg",capImg);   
+    cvReleaseImage(&capImg);   
+    delete[] bits;
 
     //Cube
     

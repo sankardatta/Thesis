@@ -111,6 +111,7 @@ void mainT()
 
 void main()
 {
+    //mainT();
     openGLBasics ob = openGLBasics();
     ob.mainGL();
 }
