@@ -4,7 +4,7 @@
 #include "imReadBasics.h"
 #include "utils.h"
 #include "geometry.h"
-#include "openGLBasics.h"
+#include "glDraws.h"
 
 using namespace std;
 using namespace cv;
@@ -113,6 +113,6 @@ void mainT()
 void main()
 {
     mainT();
-    //openGLBasics ob = openGLBasics();
+    //glDraws ob = glDraws();
     //ob.mainGL();
 }

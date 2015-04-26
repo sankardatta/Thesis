@@ -27,7 +27,7 @@
     <ClCompile Include="mainCall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="openGLBasics.cpp">
+    <ClCompile Include="glDraws.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="openGLBasics.h">
+    <ClInclude Include="glDraws.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

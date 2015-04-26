@@ -133,13 +133,13 @@
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="imReadBasics.cpp" />
     <ClCompile Include="mainCall.cpp" />
-    <ClCompile Include="openGLBasics.cpp" />
+    <ClCompile Include="glDraws.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry.h" />
     <ClInclude Include="imReadBasics.h" />
-    <ClInclude Include="openGLBasics.h" />
+    <ClInclude Include="glDraws.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

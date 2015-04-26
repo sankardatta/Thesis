@@ -3,7 +3,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "utils.h"
 #include "imReadBasics.h"
-#include "openGLBasics.h"
+#include "glDraws.h"
 
 using namespace std;
 using namespace cv;
@@ -66,7 +66,7 @@ void imReadBasics::displayImage(Mat im, string name)
 void imReadBasics::getGLImage()
 {
     Mat glImg, addedIm;
-    openGLBasics ob = openGLBasics();
+    glDraws ob = glDraws();
     glImg = ob.mainGL(rows, cols);
     cvtColor( glImg, glImg, CV_BGR2GRAY );
     cout<<"Image Obtained from OPENGL"<<endl;
