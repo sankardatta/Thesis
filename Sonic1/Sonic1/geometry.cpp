@@ -18,9 +18,30 @@ geometry::geometry(imReadBasics ob): imReadBasics(ob)
 	//Does nothing but to initialize imReadBasics with ob
 }
 
+bool geometry:: nearbyInterestPoint( int x, int y)
+{
+    // Returns True in case of existance of a previously
+    //detected interest point nearby
+    Vec2i point;
+    for (int i = 0; i < interestPoints.size(); i ++)
+    {
+        point = interestPoints.at(i);
+        if ((y - point[1]) <= yLen)
+        {
+            if (abs(point[0] - x) <= xLen)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool geometry:: containsVal()
 {
-	double xLimit, yLimit, iterX, iterY ;
+    // Returns true if the block defined by xCur and yCur
+    //contains a value
+    int xLimit, yLimit, iterX, iterY ;
 	Scalar val;
 
 	xLimit = (xCur + xLen) > cols ? (cols - 1) : (xCur + xLen)-1 ;
@@ -41,10 +62,16 @@ bool geometry:: containsVal()
 		while (iterY<=yLimit)
 		{
 			
-			val = imEdges.at<uchar>(Point2d(iterX, iterY));
+			val = imEdges.at<uchar>(Point2i(iterX, iterY));
 			if(val[0] >= 90)
 			{
 				//imGry.at<uchar>(Point2d(iterX,iterY))=200;
+                if (nearbyInterestPoint(iterX, iterY))
+                {
+                    return false;
+                }
+                interestPoints.push_back(Vec2i(iterX, iterY));
+                //interestPoints.push_back(Vec2i(iterX, iterY));
 				return true;
 			}
 			

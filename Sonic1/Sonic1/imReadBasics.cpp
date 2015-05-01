@@ -14,6 +14,7 @@ imReadBasics::imReadBasics(string path)
 	cols = imOrg.cols;
 	rows = imOrg.rows;
     cvtColor( this->imOrg, this->imGry, CV_BGR2GRAY );
+    //interestPoints
 	//imGry.create(imOrg.size(), imOrg.type());
 }
 Mat imReadBasics::addImages(Mat im1, Mat im2, int depth)
@@ -66,7 +67,7 @@ void imReadBasics::displayImage(Mat im, string name)
 void imReadBasics::getGLImage()
 {
     Mat glImg, addedIm;
-    glDraws ob = glDraws();
+    glDraws ob = glDraws(imOrg.cols, imOrg.rows);
     glImg = ob.mainGL(rows, cols);
     cvtColor( glImg, glImg, CV_BGR2GRAY );
     cout<<"Image Obtained from OPENGL"<<endl;

@@ -92,8 +92,8 @@ void mainT()
 		g.findCanny();
 		//ob.displayImage();
 		
-		g.xLen = 16;
-		g.yLen = 10;
+		g.xLen = 40;
+		g.yLen = 30;
 		int i=1;
 		while (i != 0)
 		{
@@ -105,6 +105,10 @@ void mainT()
 			i = g.computeNextSection();
 		}
 		//g.displayImage();
+        int sz = g.interestPoints.size();
+        cout << "Interest Points Size: " << sz << endl;
+        Vec2i point = g.interestPoints.at(0);
+        cout << "Interest Point: " << point << "Value" << abs(-5) << endl;
         //g.HoughTransformForCircles();
         g.getGLImage();
 	}

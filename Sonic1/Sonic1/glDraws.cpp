@@ -16,9 +16,7 @@ using namespace std;
 using namespace cv;
 
 glDraws::glDraws(void)
-{
-    cout <<"Inside GLBasics." <<endl;
-    
+{    
     glfwInit();
     window = glfwCreateWindow(800, 600, "OpenGL", nullptr, nullptr);  //(800, 600, "OpenGL", glfwGetPrimaryMonitor(), nullptr); //Fullsreen
     glfwMakeContextCurrent(window);
@@ -31,6 +29,19 @@ glDraws::glDraws(void)
     glViewport(0, 0, 800, 600);
 }
 
+glDraws::glDraws(int width, int height)
+{
+    glfwInit();
+    window = glfwCreateWindow(width, height, "OpenGL", nullptr, nullptr);
+    glfwMakeContextCurrent(window);
+
+    glewExperimental = GL_TRUE;
+    GLenum err = glewInit();
+    
+    if(err!=GLEW_OK)
+        cout << "glewInit failed, aborting. Code " << err << ". " << endl;
+    glViewport(0, 0, 800, 600);
+}
 
 glDraws::~glDraws(void)
 {
@@ -320,12 +331,12 @@ Mat glDraws::mainGL(double rows, double cols)
 
     drawFromElement();
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    drawTexture();
+    //drawTexture();
     int h = rows;
     int w = cols;
     GLubyte * bits;
     //GLvoid *bits = malloc(3 * 640 * 480);
-    bits = new GLubyte[w*3*h]; 
+    bits = new GLubyte[w*3*h];
     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, bits);
     //Mat matIm(h, w, CV_16UC1);
     IplImage * capImg = cvCreateImage( cvSize(w,h), IPL_DEPTH_8U, 3);

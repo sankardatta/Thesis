@@ -17,6 +17,7 @@ private:
 
 public:
     glDraws(void);
+    glDraws(int, int);
     Mat mainGL(double rows, double cols);
     void initShaders(const char*, const char*);
     void clean(void);
