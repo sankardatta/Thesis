@@ -1,4 +1,5 @@
 #include<iostream>
+#include <math.h>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include "geometry.h"
@@ -16,6 +17,44 @@ geometry::geometry(string path): imReadBasics(path)
 geometry::geometry(imReadBasics ob): imReadBasics(ob)
 {
 	//Does nothing but to initialize imReadBasics with ob
+}
+
+
+
+void geometry:: arrangeInOrder (vector<Vec2i> & pointList) //Learn about Alias Vs Pointers here at http://goo.gl/VriUIT
+{
+    /*vector<Vec2i> reference;
+    reference = pointList;*/
+    Vec2i pointBackUp;
+    int j;
+    int dist;
+    int distCur;
+    for(int i=1; i < pointList.size(); i++)
+    {
+        distCur = distance(pointList.at(0), pointList.at(i));
+        for(j = i; j < pointList.size(); j++)
+        {
+            
+            dist = distance(pointList.at(0), pointList.at(j));
+            if (distCur > dist)
+            {
+                pointBackUp = pointList.at(i);
+                pointList.at(i) = pointList.at(j);
+                pointList.at(j) = pointBackUp;
+                distCur = distance(pointList.at(0), pointList.at(i));
+            }
+        }
+    }
+
+}
+
+double geometry:: distance(Vec2i pointA, Vec2i pointB)
+{
+    int x1 = pointA[0];
+    int x2 = pointB[0];
+    int y1 = pointA[1];
+    int y2 = pointB[1];
+    return sqrt(pow((x1-x2), 2.0) + pow((y1-y2), 2.0));
 }
 
 bool geometry:: nearbyInterestPoint( int x, int y)

@@ -9,10 +9,12 @@ public:
 	double xLen, yLen;
 	int sectionNo;
     vector<Vec2i> interestPoints; //For usage check: http://goo.gl/FGyRnv
+    void arrangeInOrder(vector<Vec2i> &);
 
 private:
 	double xCur, yCur;
     bool nearbyInterestPoint(int, int);
+    double distance(Vec2i, Vec2i);
 
 public:
 	geometry(std::string);

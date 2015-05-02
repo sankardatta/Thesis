@@ -106,7 +106,13 @@ void mainT()
 		}
 		//g.displayImage();
         Vec2i point;
-        for(int i = 0; i < g.interestPoints.size(); i++)
+        for(i = 0; i < g.interestPoints.size(); i++)
+        {
+            point = g.interestPoints.at(i);
+            cout << "Interest Point: " << point << endl;
+        }
+        g.arrangeInOrder(g.interestPoints);
+        for(i = 0; i < g.interestPoints.size(); i++)
         {
             point = g.interestPoints.at(i);
             cout << "Interest Point: " << point << endl;
