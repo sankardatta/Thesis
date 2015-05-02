@@ -14,6 +14,7 @@ private:
     GLuint compileShaders(GLuint, string&);
     void drawFromElement(void);
     void drawTexture(void);
+    void drawFromCV();
 
 public:
     glDraws(void);
@@ -21,7 +22,11 @@ public:
     Mat mainGL(double rows, double cols);
     void initShaders(const char*, const char*);
     void clean(void);
+    void setValue(vector<Vec2f>);
     ~glDraws(void);
+
+private:
+    GLfloat verticesFromCV[12];
 
 public:
     GLuint vs, fs, program;

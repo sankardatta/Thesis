@@ -105,10 +105,12 @@ void mainT()
 			i = g.computeNextSection();
 		}
 		//g.displayImage();
-        int sz = g.interestPoints.size();
-        cout << "Interest Points Size: " << sz << endl;
-        Vec2i point = g.interestPoints.at(0);
-        cout << "Interest Point: " << point << "Value" << abs(-5) << endl;
+        Vec2i point;
+        for(int i = 0; i < g.interestPoints.size(); i++)
+        {
+            point = g.interestPoints.at(i);
+            cout << "Interest Point: " << point << endl;
+        }
         //g.HoughTransformForCircles();
         g.getGLImage();
 	}

@@ -104,6 +104,34 @@ void glDraws::clean()
     glDeleteProgram(program);
 }
 
+void glDraws::setValue(vector<Vec2f> ver)
+{
+    Vec2f point;
+    for(int i = 0; i < 6; i++)
+    {
+        point = ver.at(i);
+        verticesFromCV[i*2] = point[0];
+        verticesFromCV[i*2 + 1] = point[1];
+    }
+}
+
+void glDraws::drawFromCV()
+{
+    glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT );
+    glLoadIdentity();
+    glBegin(GL_POLYGON);
+        glColor3f(0.0f, 0.0f, 0.3f);
+        glVertex2f(-0.5f, 0.3f);
+        glVertex2f(0.5f, 0.3f);
+        glVertex2f(0.9f, 0.0f);
+        glVertex2f(0.5f, -0.3f);
+        glVertex2f(-0.5f, -0.3f);
+    glEnd();
+    glfwSwapBuffers(window);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
 void glDraws::drawTexture()
 {
     GLuint VBO;
@@ -158,7 +186,7 @@ void glDraws::drawTexture()
     glDrawArrays(GL_QUADS, 0, 4);
     glfwSwapBuffers(window);
 }
-
+ 
 void glDraws::drawFromElement()
 {
     GLuint VAO;
@@ -329,6 +357,7 @@ Mat glDraws::mainGL(double rows, double cols)
     glfwSwapBuffers(window);    
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
+    drawFromCV();
     drawFromElement();
     std::this_thread::sleep_for(std::chrono::seconds(1));
     //drawTexture();
