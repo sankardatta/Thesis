@@ -9,7 +9,7 @@ public:
 	double xLen, yLen;
 	int sectionNo;
     vector<Vec2i> interestPoints; //For usage check: http://goo.gl/FGyRnv
-    void arrangeInOrder(vector<Vec2i> &);
+    vector<Vec2f> normalizedInterestPoints;
 
 private:
 	double xCur, yCur;
@@ -19,6 +19,9 @@ private:
 public:
 	geometry(std::string);
 	geometry(imReadBasics);
+    void doEverything();
+    void normalizeInterestPoints();
+    void arrangeInOrder(vector<Vec2i> &);
 	void resetCur(void);
 	void setCur(double, double);
 	bool containsVal();

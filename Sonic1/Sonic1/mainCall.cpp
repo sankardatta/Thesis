@@ -118,7 +118,8 @@ void mainT()
             cout << "Interest Point: " << point << endl;
         }
         //g.HoughTransformForCircles();
-        g.getGLImage();
+        g.doEverything();
+        g.getGLImage(g.normalizedInterestPoints);
 	}
 }
 

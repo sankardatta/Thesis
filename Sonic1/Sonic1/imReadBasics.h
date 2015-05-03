@@ -27,6 +27,7 @@ public:
 	void findCanny();
     Mat blurify(Mat sourceIm, Size kernelsize);
     void getGLImage(void);
+    void getGLImage(vector<Vec2f>);
     void HoughTransformForCircles();
 	~imReadBasics(void);
 	

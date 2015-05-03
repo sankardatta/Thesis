@@ -19,7 +19,34 @@ geometry::geometry(imReadBasics ob): imReadBasics(ob)
 	//Does nothing but to initialize imReadBasics with ob
 }
 
+void geometry:: doEverything()
+{
+    //arrangeInOrder(interestPoints);
+    vector<Vec2i> reference;
+    reference = interestPoints;
+    interestPoints.at(1) = reference.at(2);
+    interestPoints.at(2) = reference.at(4);
+    interestPoints.at(3) = reference.at(5);
+    interestPoints.at(4) = reference.at(3);
+    interestPoints.at(5) = reference.at(1);
+    normalizeInterestPoints();
+    
+}
 
+void geometry:: normalizeInterestPoints ()
+{
+    Vec2i point;
+    float x,y;
+    for(int i =0; i < interestPoints.size(); i++)
+    {
+        point = interestPoints.at(i);
+        x = float(interestPoints.at(i)[0] - cols/2) / float(cols);
+        y = float(interestPoints.at(i)[1] - rows/2) / float(rows);
+        normalizedInterestPoints.push_back(Vec2f(x,y));
+        cout << "Interest Points:" << interestPoints.at(i) << endl;
+        cout << "Normalized Points:" << normalizedInterestPoints.at(i) << endl;
+    }
+}
 
 void geometry:: arrangeInOrder (vector<Vec2i> & pointList) //Learn about Alias Vs Pointers here at http://goo.gl/VriUIT
 {

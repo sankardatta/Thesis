@@ -115,6 +115,22 @@ void glDraws::setValue(vector<Vec2f> ver)
     }
 }
 
+void glDraws::drawFromCV(vector<Vec2f> inputPoints)
+{
+    glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT );
+    glLoadIdentity();
+    glBegin(GL_POLYGON);
+        glColor3f(0.0f, 0.0f, 0.3f);
+        for(int i = 0; i <inputPoints.size(); i++)
+        {
+            glVertex2f(inputPoints.at(i)[0], inputPoints.at(i)[1]);
+        }
+    glEnd();
+    glfwSwapBuffers(window);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
 void glDraws::drawFromCV()
 {
     glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
@@ -230,6 +246,41 @@ void glDraws::drawFromElement()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(0);
     glfwSwapBuffers(window);
+}
+
+Mat glDraws::mainGL(double rows, double cols, vector<Vec2f> points)
+{
+    drawFromCV();
+    drawFromCV(points);
+    drawFromElement();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    //drawTexture();
+    int h = rows;
+    int w = cols;
+    GLubyte * bits;
+    //GLvoid *bits = malloc(3 * 640 * 480);
+    bits = new GLubyte[w*3*h];
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, bits);
+    //Mat matIm(h, w, CV_16UC1);
+    IplImage * capImg = cvCreateImage( cvSize(w,h), IPL_DEPTH_8U, 3);
+    for(int i=0; i < h; ++i)  
+    {  
+        for(int j=0; j < w; ++j)  
+        {  
+            capImg->imageData[i*capImg->widthStep + j*3+0] = (unsigned char)(bits[(h-i-1)*3*w + j*3+0]);
+            //matIm.at<uchar>(Point(i - 1, j - 1)) = (unsigned char)(bits[(h-i-1)*3*w + j*3+0]); //i-1 as for loop i starts at 1 but Mat index starts at 0
+            capImg->imageData[i*capImg->widthStep + j*3+1] = (unsigned char)(bits[(h-i-1)*3*w + j*3+1]);  
+            capImg->imageData[i*capImg->widthStep + j*3+2] = (unsigned char)(bits[(h-i-1)*3*w + j*3+2]);  
+        }  
+    }
+    cout<<"Converting to Mat"<<endl;
+    Mat matIm(capImg);
+    imwrite("C:\\Users\\Sankar\\Desktop\\resultmatGL.jpg",matIm);
+    //cvSaveImage("C:\\Users\\Sankar\\Desktop\\resultGL.jpg",capImg);
+    //cvReleaseImage(&capImg);   
+    delete[] bits;
+    return(matIm);
+
 }
 
 Mat glDraws::mainGL(double rows, double cols)
