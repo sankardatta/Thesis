@@ -40,8 +40,8 @@ void geometry:: normalizeInterestPoints ()
     for(int i =0; i < interestPoints.size(); i++)
     {
         point = interestPoints.at(i);
-        x = float(interestPoints.at(i)[0] - cols/2) / float(cols);
-        y = float(interestPoints.at(i)[1] - rows/2) / float(rows);
+        x = float(interestPoints.at(i)[0] - cols/2) / float(cols / 2);
+        y = float(interestPoints.at(i)[1] - rows/2) / float(rows / 2);
         normalizedInterestPoints.push_back(Vec2f(x,y));
         cout << "Interest Points:" << interestPoints.at(i) << endl;
         cout << "Normalized Points:" << normalizedInterestPoints.at(i) << endl;

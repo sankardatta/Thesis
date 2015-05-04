@@ -69,8 +69,8 @@ void imReadBasics::getGLImage(vector<Vec2f> points)
     Mat glImg, addedIm;
     glDraws ob = glDraws(imOrg.cols, imOrg.rows);
     glImg = ob.mainGL(rows, cols, points);
-    cvtColor( glImg, glImg, CV_BGR2GRAY );
-    addedIm = addImages(glImg, imGry, 1);
+    //cvtColor( glImg, glImg, CV_BGR2GRAY );
+    addedIm = addImages(glImg, imOrg, 1);
     displayImage(glImg, "OpenGL image");
     displayImage(imOrg, "Original");
     displayImage(addedIm, "OpenGL added image");

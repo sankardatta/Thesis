@@ -126,6 +126,8 @@ void mainT()
 void main()
 {
     mainT();
-    //glDraws ob = glDraws();
-    //ob.mainGL();
+    //glDraws ob = glDraws(800, 800);
+    //Mat imG = ob.mainGL(800, 800);
+    //imshow("Gl Image", imG);
+    //waitKey(0);
 }

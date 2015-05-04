@@ -34,13 +34,13 @@ glDraws::glDraws(int width, int height)
     glfwInit();
     window = glfwCreateWindow(width, height, "OpenGL", nullptr, nullptr);
     glfwMakeContextCurrent(window);
-
+    cout << "Created Window" <<endl;
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     
     if(err!=GLEW_OK)
         cout << "glewInit failed, aborting. Code " << err << ". " << endl;
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, width, height);
 }
 
 glDraws::~glDraws(void)
@@ -117,11 +117,11 @@ void glDraws::setValue(vector<Vec2f> ver)
 
 void glDraws::drawFromCV(vector<Vec2f> inputPoints)
 {
-    glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT );
-    glLoadIdentity();
+    //glLoadIdentity();
     glBegin(GL_POLYGON);
-        glColor3f(0.0f, 0.0f, 0.3f);
+        glColor3f(0.0f, 0.2f, 0.1f);
         for(int i = 0; i <inputPoints.size(); i++)
         {
             glVertex2f(inputPoints.at(i)[0], inputPoints.at(i)[1]);
@@ -250,6 +250,7 @@ void glDraws::drawFromElement()
 
 Mat glDraws::mainGL(double rows, double cols, vector<Vec2f> points)
 {
+    glOrtho(-1,1,-1,1,0,10);
     drawFromCV();
     drawFromCV(points);
     drawFromElement();
@@ -263,6 +264,7 @@ Mat glDraws::mainGL(double rows, double cols, vector<Vec2f> points)
     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, bits);
     //Mat matIm(h, w, CV_16UC1);
     IplImage * capImg = cvCreateImage( cvSize(w,h), IPL_DEPTH_8U, 3);
+    
     for(int i=0; i < h; ++i)  
     {  
         for(int j=0; j < w; ++j)  
@@ -273,6 +275,7 @@ Mat glDraws::mainGL(double rows, double cols, vector<Vec2f> points)
             capImg->imageData[i*capImg->widthStep + j*3+2] = (unsigned char)(bits[(h-i-1)*3*w + j*3+2]);  
         }  
     }
+
     cout<<"Converting to Mat"<<endl;
     Mat matIm(capImg);
     imwrite("C:\\Users\\Sankar\\Desktop\\resultmatGL.jpg",matIm);
