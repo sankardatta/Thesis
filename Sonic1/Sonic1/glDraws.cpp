@@ -27,6 +27,7 @@ glDraws::glDraws(void)
     if(err!=GLEW_OK)
         cout << "glewInit failed, aborting. Code " << err << ". " << endl;
     glViewport(0, 0, 800, 600);
+
 }
 
 glDraws::glDraws(int width, int height)
@@ -41,6 +42,7 @@ glDraws::glDraws(int width, int height)
     if(err!=GLEW_OK)
         cout << "glewInit failed, aborting. Code " << err << ". " << endl;
     glViewport(0, 0, width, height);
+
 }
 
 glDraws::~glDraws(void)

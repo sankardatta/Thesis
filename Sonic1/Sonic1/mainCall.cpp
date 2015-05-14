@@ -1,6 +1,7 @@
 #include <iostream>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 #include "imReadBasics.h"
 #include "utils.h"
 #include "geometry.h"
@@ -26,8 +27,8 @@ void takeImage()
 	double w = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH);
 	double h = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT);
 	cout<<"Width: " <<w<<"\nHeight: "<< h << endl;
-	cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 1280);
-	cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 960);
+	//cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 1280);
+	//cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 960);
 
 	while ( 1 ) {
         // Get one frame
@@ -123,9 +124,40 @@ void mainT()
 	}
 }
 
+void cameraMatrix()
+{
+    
+    Size patternsize(8,5); //interior number of corners
+    Mat gray = imread("C:/Users/Sankar/Desktop/matteo.jpg"); //source image
+    Mat img = gray;
+    cvtColor(gray, gray, CV_BGR2GRAY);
+    
+    vector<Point2f> corners; //this will be filled by the detected corners
+
+    //CALIB_CB_FAST_CHECK saves a lot of time on images
+    //that do not contain any chessboard corners
+
+    bool patternfound = findChessboardCorners(gray, patternsize, corners,
+            CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE
+            + CALIB_CB_FAST_CHECK);
+    cout << "Initial Corners: " << corners <<endl;
+    if(patternfound)
+      cornerSubPix(gray, corners, Size(11, 11), Size(-1, -1),
+        TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+    cout << "Final Corners: " << corners <<endl;
+    drawChessboardCorners(img, patternsize, Mat(corners), patternfound);
+    imshow("Result", img);
+    waitKey(0);
+}
+
 void main()
 {
-    mainT();
+    //mainT();
+
+    //takeImage();
+
+    cameraMatrix();
+
     //glDraws ob = glDraws(800, 800);
     //Mat imG = ob.mainGL(800, 800);
     //imshow("Gl Image", imG);
