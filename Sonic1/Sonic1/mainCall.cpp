@@ -10,6 +10,103 @@
 using namespace std;
 using namespace cv;
 
+void cameraCalib()
+{
+	CvCapture* capture = cvCaptureFromCAM(0);
+	if ( !capture ) 
+	{
+        cout<< "ERROR: capture is NULL" <<endl;
+        getchar();
+		getchar();
+		exit(0);
+    }
+    IplImage* img;
+    IplImage* frame;
+	cvNamedWindow( "mywindow", CV_WINDOW_AUTOSIZE );
+    
+    int count = 0;
+    string path = "C:\\Users\\Sankar\\Desktop\\cameraCalib\\";
+    string loc;
+    Mat gray, drawIm;
+    CvSize size;
+    Size patternsize(8,5);
+    vector<Point2f> corners;
+    bool patternfound;
+	while ( 1 ) 
+       {
+        frame = cvQueryFrame( capture );
+        if ( !frame ) 
+            {
+                fprintf( stderr, "ERROR: frame is null...\n" );
+                getchar();
+                break;
+            }
+        cvShowImage( "mywindow", frame );
+        gray = Mat(frame);
+        //cameraMatrix(im);
+        if ( (cvWaitKey(10) & 255) == 's' ) {
+            size = cvGetSize(frame);
+            img = cvCreateImage(size, IPL_DEPTH_16S, 1);
+            img = frame;
+
+            loc = path + "Logitech" + to_string(count) + ".jpg";
+            count = count + 1;
+            cvSaveImage(loc.c_str(), img);
+                                            }
+		if ( (cvWaitKey(10) & 255) == 'e' ) 
+			break;
+        
+        //Working with chessBoard
+        drawIm = gray;
+        cvtColor(gray, gray, CV_BGR2GRAY);
+    
+         //this will be filled by the detected corners
+
+        //CALIB_CB_FAST_CHECK saves a lot of time on images
+        //that do not contain any chessboard corners
+
+        patternfound = findChessboardCorners(gray, patternsize, corners,
+                CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE
+                + CALIB_CB_FAST_CHECK);
+
+        if(patternfound)
+          cornerSubPix(gray, corners, Size(11, 11), Size(-1, -1),
+            TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+
+        drawChessboardCorners(drawIm, patternsize, Mat(corners), patternfound);
+        imshow("Result", drawIm);
+        //waitKey(0);
+    }
+	cvReleaseCapture( &capture );
+    cvDestroyWindow( "mywindow" );
+
+}
+
+void cameraMatrix()
+{
+    
+    Size patternsize(8,5); //interior number of corners
+    Mat gray = imread("C:/Users/Sankar/Desktop/matteo.jpg"); //source image
+    Mat img = gray;
+    cvtColor(gray, gray, CV_BGR2GRAY);
+    
+    vector<Point2f> corners; //this will be filled by the detected corners
+
+    //CALIB_CB_FAST_CHECK saves a lot of time on images
+    //that do not contain any chessboard corners
+
+    bool patternfound = findChessboardCorners(gray, patternsize, corners,
+            CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE
+            + CALIB_CB_FAST_CHECK);
+
+    if(patternfound)
+      cornerSubPix(gray, corners, Size(11, 11), Size(-1, -1),
+        TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+
+    drawChessboardCorners(img, patternsize, Mat(corners), patternfound);
+    imshow("Result", img);
+    waitKey(0);
+}
 
 
 void takeImage()
@@ -124,39 +221,13 @@ void mainT()
 	}
 }
 
-void cameraMatrix()
-{
-    
-    Size patternsize(8,5); //interior number of corners
-    Mat gray = imread("C:/Users/Sankar/Desktop/matteo.jpg"); //source image
-    Mat img = gray;
-    cvtColor(gray, gray, CV_BGR2GRAY);
-    
-    vector<Point2f> corners; //this will be filled by the detected corners
-
-    //CALIB_CB_FAST_CHECK saves a lot of time on images
-    //that do not contain any chessboard corners
-
-    bool patternfound = findChessboardCorners(gray, patternsize, corners,
-            CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE
-            + CALIB_CB_FAST_CHECK);
-    cout << "Initial Corners: " << corners <<endl;
-    if(patternfound)
-      cornerSubPix(gray, corners, Size(11, 11), Size(-1, -1),
-        TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-    cout << "Final Corners: " << corners <<endl;
-    drawChessboardCorners(img, patternsize, Mat(corners), patternfound);
-    imshow("Result", img);
-    waitKey(0);
-}
-
 void main()
 {
     //mainT();
 
     //takeImage();
 
-    cameraMatrix();
+    cameraCalib();
 
     //glDraws ob = glDraws(800, 800);
     //Mat imG = ob.mainGL(800, 800);
