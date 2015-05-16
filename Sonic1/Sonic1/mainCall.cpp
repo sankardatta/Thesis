@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace cv;
+vector<Point2f> cameraMatrix(Mat);
 
 void cameraCalib()
 {
@@ -44,7 +45,7 @@ void cameraCalib()
         cvShowImage( "mywindow", frame );
         gray = Mat(frame);
         //cameraMatrix(im);
-        if ( (cvWaitKey(10) & 255) == 's' ) {
+        if ( (cvWaitKey(3) & 255) == 's' ) {
             size = cvGetSize(frame);
             img = cvCreateImage(size, IPL_DEPTH_16S, 1);
             img = frame;
@@ -53,7 +54,7 @@ void cameraCalib()
             count = count + 1;
             cvSaveImage(loc.c_str(), img);
                                             }
-		if ( (cvWaitKey(10) & 255) == 'e' ) 
+		if ( (cvWaitKey(3) & 255) == 'e' ) 
 			break;
         
         //Working with chessBoard
@@ -80,6 +81,88 @@ void cameraCalib()
 	cvReleaseCapture( &capture );
     cvDestroyWindow( "mywindow" );
 
+}
+
+void test()
+{
+    CvCapture* capture = cvCaptureFromCAM(0);
+    if ( !capture ) 
+	{
+        cout<< "ERROR: capture is NULL" <<endl;
+        getchar();
+		getchar();
+		exit(0);
+    }
+
+    double w = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH);
+	double h = cvGetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT);
+    Size imageSize(w,h);
+
+    // 3D coordinates of chessboard points
+    int a = 3;
+    vector<Point3f> objectPoints;
+    for(int x=1; x<=8; x++){
+        for(int y=1; y<=5; y++) 
+            objectPoints.push_back(cv::Point3f(x*a,y*a,0));
+    }
+
+    cout<< "object Points: " << objectPoints.size() << endl;
+    vector<vector<Point3f>> arrayObjectPoints;
+    arrayObjectPoints.push_back(objectPoints);
+
+    double aspectRatio=1;
+    IplImage * frame;
+    Mat im;
+    vector<Point2f> imagePoints;
+    vector<vector<Point2f>> arrayImagePoints;
+    Mat cameraInitMat;
+    while ( 1 ) 
+    {
+        frame = cvQueryFrame( capture );
+        im = Mat(frame);
+        imagePoints = cameraMatrix(im);
+
+        if ( (cvWaitKey(1) & 255) == 's' ) 
+        {
+            arrayImagePoints.push_back(imagePoints);
+            cout << "Image Points: " << imagePoints.size() <<endl;
+            cvSaveImage("C:\\Users\\Sankar\\Desktop\\matteo.jpg", frame);
+            cameraInitMat = initCameraMatrix2D(arrayObjectPoints, arrayImagePoints, imageSize, aspectRatio);
+            cout << "camera Initialization Mat: " <<cameraInitMat <<endl;
+        }
+
+        if ( (cvWaitKey(1) & 255) == 'e' ) 
+        {
+            break;
+        }
+    }
+}
+
+vector<Point2f> cameraMatrix(Mat gray)
+{
+    
+    Size patternsize(8,5); //interior number of corners
+    //Mat gray = imread("C:/Users/Sankar/Desktop/matteo.jpg"); //source image
+    Mat img = gray;
+    cvtColor(gray, gray, CV_BGR2GRAY);
+    
+    vector<Point2f> corners; //this will be filled by the detected corners
+
+    //CALIB_CB_FAST_CHECK saves a lot of time on images
+    //that do not contain any chessboard corners
+
+    bool patternfound = findChessboardCorners(gray, patternsize, corners,
+            CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE
+            + CALIB_CB_FAST_CHECK);
+
+    if(patternfound)
+      cornerSubPix(gray, corners, Size(11, 11), Size(-1, -1),
+        TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+
+    drawChessboardCorners(img, patternsize, Mat(corners), patternfound);
+    imshow("Result", img);
+    waitKey(1);
+    return corners;
 }
 
 void cameraMatrix()
@@ -227,7 +310,9 @@ void main()
 
     //takeImage();
 
-    cameraCalib();
+    test();
+
+    //cameraCalib();
 
     //glDraws ob = glDraws(800, 800);
     //Mat imG = ob.mainGL(800, 800);
