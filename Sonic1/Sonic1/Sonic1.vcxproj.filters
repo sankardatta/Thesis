@@ -73,4 +73,7 @@
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="calibInfo.xml" />
+  </ItemGroup>
 </Project>

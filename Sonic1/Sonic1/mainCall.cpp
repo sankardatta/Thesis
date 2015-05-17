@@ -13,6 +13,7 @@ using namespace cv;
 vector<Point2f> cameraMatrix(Mat);
 Mat cameraCalibInitVal(Mat);
 vector<Point2f> obtainImagePoints(Mat);
+void writeIntoFile(Mat, vector<double>);
 
 void cameraCalibTakeImages()
 {
@@ -86,7 +87,7 @@ void cameraCalibTakeImages()
 
 }
 
-void solvePNPTry(Mat cameraMat,vector<double> distCoeffs, vector<vector<double>> rvecsDefault, vector<vector<double>> tvecsDefault)
+void solvePNPTry(Mat cameraMat,vector<double> distCoeffs )
 {
     CvCapture* capture = cvCaptureFromCAM(0);
     if ( !capture ) 
@@ -124,11 +125,9 @@ void solvePNPTry(Mat cameraMat,vector<double> distCoeffs, vector<vector<double>>
         imgPoints = obtainImagePoints(gray);
         if (imgPoints.size() == objectPoints.size())
         {
-            cout << "Img Points:" << imgPoints.size() << endl;
-            cout << "object Points:" << objectPoints.size() << endl;
-            cout << "Calling solvePnP" <<endl;
-            solve = solvePnP(objectPoints, imgPoints, cameraMat, distCoeffs, rvecs, tvecs, true, CV_ITERATIVE);
-            cout << "SolvePnP Status: " << solve <<endl;
+            solve = solvePnP(objectPoints, imgPoints, cameraMat, distCoeffs, rvecs, tvecs, false, CV_ITERATIVE);
+            //cout << "Rvecs: " << rvecs.at(0) << ". " << rvecs.at(1) << ". " << rvecs.at(2) << endl;
+            cout << "Tvecs: " <<tvecs.at(0) << " " << tvecs.at(1) << " " << tvecs.at(2) <<endl;
         }
         
         if ( (cvWaitKey(1) & 255) == 'e' ) 
@@ -214,8 +213,9 @@ void cameraCalib()
     cout << "CameraCalibValue: " <<cameraCalibratedValue <<endl;
     cout << "Camera Matrix: " << cameraMat << endl;
     //cout << "distCoeffs: " << distCoeffs.data() << endl;
+    writeIntoFile(cameraMat, distCoeffs);
     getchar();
-    solvePNPTry(cameraMat, distCoeffs, rvecs, tvecs);
+    //solvePNPTry(cameraMat, distCoeffs, rvecs, tvecs);
 }
 
 vector<Point2f> obtainImagePoints(Mat gray)
@@ -495,6 +495,59 @@ void mainT()
 	}
 }
 
+void readFile(Mat & cameraMat, vector<double>& distCoeffs)
+{
+    string filename = "calibInfo.xml";
+    FileStorage fs(filename, FileStorage::READ);
+    
+    fs["cameraMatrix"] >> cameraMat;
+    fs["distCoeffs"] >> distCoeffs;
+
+    cout << "camera mat:" << cameraMat << endl;
+    cout << "dist coeffs:" << distCoeffs.at(0) << endl;
+    fs.release();
+}
+
+void writeIntoFile(Mat cameraMat, vector<double> distCoeffs)
+{
+    string filename = "calibInfo.xml";
+    FileStorage fs(filename, FileStorage::WRITE);
+    
+    fs << "cameraMatrix" << cameraMat;
+    fs << "distCoeffs" << distCoeffs;
+
+    fs.release();
+}
+
+void readingWritingTry()
+{
+    Mat cameraMat(2,2, CV_8UC3, Scalar(0,0,255));
+    vector<double> distCoeffs;
+    distCoeffs.push_back(7.0);
+    distCoeffs.push_back(37.0);
+    distCoeffs.push_back(49.0);
+    writeIntoFile(cameraMat, distCoeffs);
+    Mat c;
+    vector<double> d;
+    readFile(c, d);
+    cout << "Camera Mat C: " << c<<endl;
+    cout<< "DistCoeff D:" << d.at(1);
+}
+
+void startSolvePNP()
+{
+    cout << "Calibrate camera from images? (y/n): ";
+    char c;
+    cin >> c;
+    if (c == 'y')
+        cameraCalib();
+    
+    Mat cameraMat;
+    vector<double> distCoeffs;
+    readFile(cameraMat, distCoeffs);
+    solvePNPTry(cameraMat, distCoeffs);
+}
+
 void main()
 {
     //mainT();
@@ -503,7 +556,8 @@ void main()
 
     //cameraMatInit();
 
-    cameraCalib();
+    startSolvePNP(); //readingWritingTry();
+    //cameraCalib();
 
     //cameraCalibTakeImages();
 
