@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camCalib.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="imReadBasics.cpp" />
     <ClCompile Include="mainCall.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camCalib.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="imReadBasics.h" />
     <ClInclude Include="glDraws.h" />

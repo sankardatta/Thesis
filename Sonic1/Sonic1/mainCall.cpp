@@ -86,6 +86,58 @@ void cameraCalibTakeImages()
 
 }
 
+void solvePNPTry(Mat cameraMat,vector<double> distCoeffs, vector<vector<double>> rvecsDefault, vector<vector<double>> tvecsDefault)
+{
+    CvCapture* capture = cvCaptureFromCAM(0);
+    if ( !capture ) 
+	{
+        cout<< "ERROR: capture is NULL" <<endl;
+        getchar();
+		getchar();
+		exit(0);
+    }
+    
+    // 3D coordinates of chessboard points
+    int a = 30; //This is the size of chessboard boxes in mm
+    vector<Point3f> objectPoints;
+    for(int x=1; x<=8; x++){
+        for(int y=1; y<=5; y++) 
+            objectPoints.push_back(cv::Point3f(x*a,y*a,0));
+    }
+
+    IplImage * frame;
+    Mat gray;
+    vector<Point2f> imgPoints;
+    bool solve;
+    vector<double> rvecs, tvecs;
+	while ( 1 ) 
+     {
+        frame = cvQueryFrame( capture );
+        if ( !frame ) 
+            {
+                fprintf( stderr, "ERROR: frame is null...\n" );
+                getchar();
+                break;
+            }
+        cvShowImage( "mywindow", frame );
+        gray = Mat(frame);
+        imgPoints = obtainImagePoints(gray);
+        if (imgPoints.size() == objectPoints.size())
+        {
+            cout << "Img Points:" << imgPoints.size() << endl;
+            cout << "object Points:" << objectPoints.size() << endl;
+            cout << "Calling solvePnP" <<endl;
+            solve = solvePnP(objectPoints, imgPoints, cameraMat, distCoeffs, rvecs, tvecs, true, CV_ITERATIVE);
+            cout << "SolvePnP Status: " << solve <<endl;
+        }
+        
+        if ( (cvWaitKey(1) & 255) == 'e' ) 
+        {
+            break;
+        }
+    }
+}
+
 void cameraCalib()
 {
     string path = "C:\\Users\\Sankar\\Desktop\\cameraCalib\\";
@@ -163,6 +215,7 @@ void cameraCalib()
     cout << "Camera Matrix: " << cameraMat << endl;
     //cout << "distCoeffs: " << distCoeffs.data() << endl;
     getchar();
+    solvePNPTry(cameraMat, distCoeffs, rvecs, tvecs);
 }
 
 vector<Point2f> obtainImagePoints(Mat gray)
