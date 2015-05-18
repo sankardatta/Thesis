@@ -556,7 +556,9 @@ void main()
 
     //cameraMatInit();
 
-    startSolvePNP(); //readingWritingTry();
+    glDraws ob = glDraws(800, 800);//startSolvePNP(); //readingWritingTry();
+    vector<double> t,r;
+    ob.mainGL(t, r);
     //cameraCalib();
 
     //cameraCalibTakeImages();

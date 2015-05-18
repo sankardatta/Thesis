@@ -13,6 +13,7 @@ private:
     void loadShaders(const char*, string&);
     GLuint compileShaders(GLuint, string&);
     void drawFromElement(void);
+    void drawBox(void);
     void drawTexture(void);
     void drawFromCV();
     void drawFromCV(vector<Vec2f>);
@@ -22,6 +23,7 @@ public:
     glDraws(int, int);
     Mat mainGL(double rows, double cols);
     Mat mainGL(double rows, double cols, vector<Vec2f> points);
+    void mainGL(vector<double>, vector<double>);
     void initShaders(const char*, const char*);
     void clean(void);
     void setValue(vector<Vec2f>);

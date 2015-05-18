@@ -204,7 +204,69 @@ void glDraws::drawTexture()
     glDrawArrays(GL_QUADS, 0, 4);
     glfwSwapBuffers(window);
 }
- 
+
+void glDraws::drawBox()
+{
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
+
+    GLfloat vertices[] = {
+    //frontside
+     0.5f,  0.5f, -0.5f,   // Top Right
+     0.5f, -0.5f, -0.5f,   // Bottom Right
+    -0.5f, -0.5f, -0.5f,   // Bottom Left
+    -0.5f,  0.5f, -0.5f,   // Top Left
+    //backside
+     0.5f,  0.5f, 0.5f,   // Top Right
+     0.5f, -0.5f, 0.5f,   // Bottom Right
+    -0.5f, -0.5f, 0.5f,   // Bottom Left
+    -0.5f,  0.5f, 0.5f,   // Top Left
+    };
+
+    GLuint indices[] = {  // Note that we start from 0!
+    0, 1, 3,   // First Triangle
+    1, 2, 3,    // Second Triangle
+    4, 6, 7,
+    5, 6, 7
+    };
+
+    //rotation and translation
+    glm::mat4 trans;
+    trans = glm::rotate(trans, glm::radians(60.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+
+    initShaders("box.vsh", "colorShaderOne.fsh");
+    
+    GLint posAttrib = glGetAttribLocation(program, "position");
+    GLuint transformLoc = glGetUniformLocation(program, "MVP");
+    
+
+    glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(posAttrib);
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+    glBindVertexArray(0);
+
+    glBindVertexArray(VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBindVertexArray(0);
+    glfwSwapBuffers(window);
+}
+
 void glDraws::drawFromElement()
 {
     GLuint VAO;
@@ -248,6 +310,12 @@ void glDraws::drawFromElement()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(0);
     glfwSwapBuffers(window);
+}
+
+void glDraws::mainGL(vector<double> tvec, vector<double> rvec)
+{
+    drawBox();
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 Mat glDraws::mainGL(double rows, double cols, vector<Vec2f> points)
@@ -444,3 +512,4 @@ Mat glDraws::mainGL(double rows, double cols)
     return(matIm);
     //std::getchar();
 }
+

@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="camCalib.cpp" />
     <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="glCenturai.cpp" />
     <ClCompile Include="imReadBasics.cpp" />
     <ClCompile Include="mainCall.cpp" />
     <ClCompile Include="glDraws.cpp" />
@@ -140,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="camCalib.h" />
     <ClInclude Include="geometry.h" />
+    <ClInclude Include="glCenturai.h" />
     <ClInclude Include="imReadBasics.h" />
     <ClInclude Include="glDraws.h" />
     <ClInclude Include="utils.h" />
@@ -153,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="positionShaderTwo.vsh" />
+    <Text Include="box.vsh" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="calibInfo.xml" />
