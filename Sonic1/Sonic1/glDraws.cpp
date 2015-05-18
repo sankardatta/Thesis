@@ -224,15 +224,15 @@ void glDraws::drawBox()
     };
 
     GLuint indices[] = {  // Note that we start from 0!
-    0, 1, 3,   // First Triangle
-    1, 2, 3,    // Second Triangle
-    4, 6, 7,
-    5, 6, 7
+    0, 1, 2, 3,   // First Triangle
+    0, 1, 5, 4,    // Second Triangle
+    4, 5, 6, 7,
+    3, 2, 6, 7
     };
 
     //rotation and translation
     glm::mat4 trans;
-    trans = glm::rotate(trans, glm::radians(60.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::rotate(trans, glm::radians(60.0f), glm::vec3(0.5f, 1.0f, 0.0f));
     trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
 
     GLuint EBO;
@@ -261,7 +261,7 @@ void glDraws::drawBox()
     glBindVertexArray(VAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glClear(GL_COLOR_BUFFER_BIT);
-    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_QUADS, 16, GL_UNSIGNED_INT, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(0);
     glfwSwapBuffers(window);
