@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "geometry.h"
 #include "glDraws.h"
+#include "camCalib.h"
 
 using namespace std;
 using namespace cv;
@@ -519,20 +520,6 @@ void writeIntoFile(Mat cameraMat, vector<double> distCoeffs)
     fs.release();
 }
 
-void readingWritingTry()
-{
-    Mat cameraMat(2,2, CV_8UC3, Scalar(0,0,255));
-    vector<double> distCoeffs;
-    distCoeffs.push_back(7.0);
-    distCoeffs.push_back(37.0);
-    distCoeffs.push_back(49.0);
-    writeIntoFile(cameraMat, distCoeffs);
-    Mat c;
-    vector<double> d;
-    readFile(c, d);
-    cout << "Camera Mat C: " << c<<endl;
-    cout<< "DistCoeff D:" << d.at(1);
-}
 
 void startSolvePNP()
 {
@@ -556,9 +543,12 @@ void main()
 
     //cameraMatInit();
 
-    glDraws ob = glDraws(800, 800);//startSolvePNP(); //readingWritingTry();
-    vector<double> t,r;
-    ob.mainGL(t, r);
+    //glDraws ob = glDraws(800, 800);//startSolvePNP(); 
+    //vector<double> t,r;
+    //ob.mainGL(t, r);
+
+    camCalib oc = camCalib();
+
     //cameraCalib();
 
     //cameraCalibTakeImages();

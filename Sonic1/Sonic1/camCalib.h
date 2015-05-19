@@ -12,11 +12,15 @@ class camCalib
 public:
     camCalib(void);
     void calibFromImages(string); //path to folder
-    
+    void readCalibFile(Mat&, vector<double>&);
+    void writeIntoFile(Mat, vector<double>);
+    void solvePNPFromCamera(Mat ,vector<double> );
     ~camCalib(void);
 
 private:
-    vector<Point2f> obtainImagePoints(Mat);
+    void genCamMatrix();
     Mat cameraCalibInitVal(Mat);
+    vector<Point2f> cameraMatrixFromChessBoard(Mat);
+    vector<Point2f> obtainImagePoints(Mat);
 };
 
