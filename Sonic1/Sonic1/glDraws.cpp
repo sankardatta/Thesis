@@ -10,7 +10,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <SOIL.h>
+
 
 using namespace std;
 using namespace cv;
@@ -27,7 +27,11 @@ glDraws::glDraws(void)
     if(err!=GLEW_OK)
         cout << "glewInit failed, aborting. Code " << err << ". " << endl;
     glViewport(0, 0, 800, 600);
-
+    
+    //for texture in drawBox
+    image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\woodenBox.jpg", &texWidth, &texHeight, 0, SOIL_LOAD_RGB);
+    //initShaders("box.vsh", "box.fsh");
+    //SOIL_free_image_data(image);
 }
 
 glDraws::glDraws(int width, int height)
@@ -43,6 +47,10 @@ glDraws::glDraws(int width, int height)
         cout << "glewInit failed, aborting. Code " << err << ". " << endl;
     glViewport(0, 0, width, height);
 
+    //for texture in drawBox
+    image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\woodenBox.jpg", &texWidth, &texHeight, 0, SOIL_LOAD_RGB);
+    //initShaders("box.vsh", "box.fsh");
+    //SOIL_free_image_data(image);
 }
 
 glDraws::~glDraws(void)
@@ -150,6 +158,51 @@ void glDraws::drawFromCV()
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
+void glDraws::drawMovingPlane(vector<double>tvec, vector<double>rvec)
+{
+    //viewMatrix = Mat(4, 4, CV_64F);
+    //GLuint VBO;
+    //glGenBuffers(1, &VBO);
+
+    
+    
+    /*Rodrigues(rvec, rotation);
+    for(unsigned int row=0; row<3; ++row)
+    {
+        for(unsigned int col=0; col<3; ++col)
+        {
+            viewMatrix.at<double>(row, col) = rotation.at<double>(row, col);
+        }
+        viewMatrix.at<double>(row, 3) = 1.0;
+    }
+    viewMatrix.at<double>(3, 3) = 1.0;*/
+    //viewMatrix.t();
+    
+    //glMatrixMode(GL_MODELVIEW);
+    //glLoadMatrixd(&viewMatrix.at<double>(0, 0));
+    
+    glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT );
+    glLoadIdentity();
+    //glTranslatef(0.5f, 0.5f, 0.0f);
+    glRotatef(rvec.at(0) * 180 / 3.14159265358,1.0f,0.0f,0.0f);
+    glRotatef(rvec.at(1) * 180 / 3.14159265358,0.0f,1.0f,0.0f);
+    glRotatef(rvec.at(2) * 180 / 3.14159265358,0.0f,0.0f,1.0f);
+
+    glBegin(GL_QUADS);
+        glColor3f(1.0f, 0.0f,0.0f);
+        glVertex2f(0.5f, 0.5f);
+        glColor3f(0.0f, 0.0f,1.0f);
+        glVertex2f(-0.5f, 0.5f);
+        glColor3f(0.5f, 0.5f,0.0f);
+        glVertex2f(-0.5f, -0.5f);
+        glColor3f(0.0f,1.0f, 0.0f);
+        glVertex2f(0.5f, -0.5f);
+    glEnd();
+    glfwSwapBuffers(window);
+    
+}
+
 void glDraws::drawTexture()
 {
     GLuint VBO;
@@ -165,14 +218,11 @@ void glDraws::drawTexture()
     // Set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height;
-    unsigned char* image = SOIL_load_image("C:\\Users\\Sankar\\Desktop\\woodenBox.jpg", &width, &height, 0, SOIL_LOAD_RGB);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     
-    SOIL_free_image_data(image);
+    //SOIL_free_image_data(image);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     GLfloat vertices[] = {
@@ -205,22 +255,22 @@ void glDraws::drawTexture()
     glfwSwapBuffers(window);
 }
 
-void glDraws::drawBox()
+void glDraws::drawBox(vector<double> tvec, vector<double> rvec)
 {
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
 
     GLfloat vertices[] = {
-    //frontside
-     0.5f,  0.5f, -0.5f,   // Top Right
-     0.5f, -0.5f, -0.5f,   // Bottom Right
-    -0.5f, -0.5f, -0.5f,   // Bottom Left
-    -0.5f,  0.5f, -0.5f,   // Top Left
+    //frontside          //colours
+     0.5f,  0.5f, -0.5f, 0.25f, 0.0f, 0.0f,   // Top Right
+     0.5f, -0.5f, -0.5f, 0.0f, 0.25f, 0.0f,  // Bottom Right
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.25f,  // Bottom Left
+    -0.5f,  0.5f, -0.5f, 0.25f, 0.0f, 0.25f,  // Top Left
     //backside
-     0.5f,  0.5f, 0.5f,   // Top Right
-     0.5f, -0.5f, 0.5f,   // Bottom Right
-    -0.5f, -0.5f, 0.5f,   // Bottom Left
-    -0.5f,  0.5f, 0.5f,   // Top Left
+     0.5f,  0.5f, 0.5f, 0.0f, 0.25f, 0.25f,  // Top Right
+     0.5f, -0.5f, 0.5f, 0.25f, 0.25f, 0.0f,  // Bottom Right
+    -0.5f, -0.5f, 0.5f, 0.5f, 0.1f, 0.0f,  // Bottom Left
+    -0.5f,  0.5f, 0.5f, 0.3f, 0.0f, 0.3f,  // Top Left
     };
 
     GLuint indices[] = {  // Note that we start from 0!
@@ -229,37 +279,83 @@ void glDraws::drawBox()
     4, 5, 6, 7,
     3, 2, 6, 7
     };
-
+    /*
+    GLuint texCoord[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f
+    };
+    
+    //Only For Texture
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    
+    // Set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+    */
     //rotation and translation
     glm::mat4 trans;
-    trans = glm::rotate(trans, glm::radians(60.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-    trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+    
+    trans = glm::rotate(trans, float(rvec.at(0)), glm::vec3(1.0f, 0.0f, 0.0f));
+    trans = glm::rotate(trans, float(rvec.at(2)), glm::vec3(0.0f, 1.0f, 0.0f));
+    trans = glm::rotate(trans, float(rvec.at(1)), glm::vec3(0.0f, 0.0f, 1.0f));
+    //trans = glm::rotate(trans, glm::radians(60.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    trans = glm::scale(trans, glm::vec3(0.5f, 0.25f, 0.75f));
+    //trans = glm::translate(trans, glm::vec3(1.0f - 1.0f/float(tvec.at(0)), 1.0f - 1.0f/float(tvec.at(1)), 1.0f - 1.0f/float(tvec.at(2)) ));
 
     GLuint EBO;
     glGenBuffers(1, &EBO);
     GLuint VBO;
     glGenBuffers(1, &VBO);
 
-    initShaders("box.vsh", "colorShaderOne.fsh");
+    //initShaders("box.vsh", "box.fsh");
     
     GLint posAttrib = glGetAttribLocation(program, "position");
+    GLint colorAttrib = glGetAttribLocation(program, "inColor");
     GLuint transformLoc = glGetUniformLocation(program, "MVP");
+    //GLint texCoordId = glGetAttribLocation(program, "texCoord");
+    //GLint ourTexture = glGetUniformLocation(program, "ourTexture");
     
-
     glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), NULL, GL_STATIC_DRAW);
+        //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(texCoord), NULL, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        //glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(texCoord), texCoord);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttrib);
+        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+
+        glEnableVertexAttribArray(colorAttrib);
+        glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+        
+        //glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        //glEnableVertexAttribArray(posAttrib);
+        
+        //glVertexAttribPointer(texCoordId, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)(sizeof(vertices)));
+        //glEnableVertexAttribArray(texCoordId);
+
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        
     glBindVertexArray(0);
 
+    //glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glClear(GL_COLOR_BUFFER_BIT);
     glDrawElements(GL_QUADS, 16, GL_UNSIGNED_INT, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -314,8 +410,10 @@ void glDraws::drawFromElement()
 
 void glDraws::mainGL(vector<double> tvec, vector<double> rvec)
 {
-    drawBox();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    //drawBox(tvec, rvec);
+    //drawTexture();
+    drawMovingPlane(tvec, rvec);
+    //std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 Mat glDraws::mainGL(double rows, double cols, vector<Vec2f> points)

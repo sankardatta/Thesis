@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
+#include <SOIL.h>
 #pragma once
 
 using namespace std;
@@ -13,8 +15,9 @@ private:
     void loadShaders(const char*, string&);
     GLuint compileShaders(GLuint, string&);
     void drawFromElement(void);
-    void drawBox(void);
+    void drawBox(vector<double>, vector<double>);
     void drawTexture(void);
+    void drawMovingPlane(vector<double>, vector<double>);
     void drawFromCV();
     void drawFromCV(vector<Vec2f>);
 
@@ -30,7 +33,10 @@ public:
     ~glDraws(void);
 
 private:
+    Mat rotation, viewMatrix;
     GLfloat verticesFromCV[12];
+    int texWidth, texHeight;
+    unsigned char* image;
 
 public:
     GLuint vs, fs, program;

@@ -81,6 +81,9 @@
     <Text Include="box.vsh">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="box.fsh">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="calibInfo.xml" />
