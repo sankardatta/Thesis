@@ -185,10 +185,11 @@ void glDraws::drawMovingPlane(vector<double>tvec, vector<double>rvec)
     glClear(GL_COLOR_BUFFER_BIT );
     glLoadIdentity();
     //glTranslatef(0.5f, 0.5f, 0.0f);
-    glRotatef(rvec.at(0) * 180 / 3.14159265358,1.0f,0.0f,0.0f);
-    glRotatef(rvec.at(1) * 180 / 3.14159265358,0.0f,1.0f,0.0f);
-    glRotatef(rvec.at(2) * 180 / 3.14159265358,0.0f,0.0f,1.0f);
-
+    float angle = sqrt(pow(rvec.at(0),2.0) + pow(rvec.at(1),2.0) + pow(rvec.at(2),2.0));
+    glRotatef(angle * 180.0 / 3.14159265358, float(rvec.at(0)/angle), float(rvec.at(1)/angle), -float(rvec.at(2)/angle));
+    //glRotatef(rvec.at(1) * 180 / 3.14159265358,0.0f,1.0f,0.0f);
+    //glRotatef(rvec.at(2) * 180 / 3.14159265358,0.0f,0.0f,1.0f);
+    //gluLookAt(0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
     glBegin(GL_QUADS);
         glColor3f(1.0f, 0.0f,0.0f);
         glVertex2f(0.5f, 0.5f);

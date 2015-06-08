@@ -5,7 +5,7 @@
 camCalib::camCalib(void)
 {
     filename = "calibInfo.xml";
-    path = "C:\\Users\\Sankar\\Desktop\\cameraCalib\\";
+    path = "C:\\Users\\Sankar\\Desktop\\cameraCalib\\CamStore0\\";
 
     genObjectPoints();
     cout << "Calibrate camera from images? (y/n): ";
@@ -36,7 +36,8 @@ void camCalib::solvePNPFromCamera(Mat cameraMat,vector<double> distCoeffs )
 
     IplImage * frame;
     Mat gray;
-    vector<Point2f> imgPoints;
+    vector<Point2f> imgPoints, newImagePoints;
+    vector<Point3f> newObjectPoints;
     bool solve;
     vector<double> rvecs, tvecs;
     glDraws drawOb = glDraws(800, 600);
@@ -52,17 +53,28 @@ void camCalib::solvePNPFromCamera(Mat cameraMat,vector<double> distCoeffs )
         //cvShowImage( "mywindow", frame );
         gray = Mat(frame);
         imgPoints = obtainImagePoints(gray);
+        
         if (imgPoints.size() == objectPoints.size())
         {
-            solve = solvePnP(objectPoints, imgPoints, cameraMat, distCoeffs, rvecs, tvecs, false, CV_ITERATIVE);
+            newImagePoints.push_back(imgPoints.at(0)); //pushing back only four points from chessboard 
+            newImagePoints.push_back(imgPoints.at(7));
+            newImagePoints.push_back(imgPoints.at(39));
+            newImagePoints.push_back(imgPoints.at(32));
+            
+            newObjectPoints.push_back(Point3f(0,0,0));
+            newObjectPoints.push_back(Point3f(0,7*30,0));
+            newObjectPoints.push_back(Point3f(4*30,7*30,0));
+            newObjectPoints.push_back(Point3f(4*30,0,0));
+
+            solve = solvePnP(newObjectPoints, newImagePoints, cameraMat, distCoeffs, rvecs, tvecs, false, CV_ITERATIVE);
             cout << "Rvecs: " << rvecs.at(0) * 180 /3.14159265358 << ". " << rvecs.at(1) * 180 /3.14159265358 << ". " << rvecs.at(2) * 180 /3.14159265358 << endl;
             //prepareData(tvecs, rvecs);
             //cout << "TransVec: " <<transMat << endl << " RotVec: " << rotMat <<endl;
             //cout << "Tvecs: " <<tvecs.at(0) << " " << tvecs.at(1) << " " << tvecs.at(2) <<endl;
-            //Rodrigues(rvecs, rotMat);
+            Rodrigues(rvecs, rotMat);
             //cout << "Rodrigues: " << rotMat << endl;
-            //rotMat = rotMat.t();
-            //Rodrigues(rotMat, rvecs);
+            rotMat = rotMat.t();
+            Rodrigues(rotMat, rvecs);
             drawOb.mainGL(tvecs, rvecs);
         }
         
@@ -98,18 +110,19 @@ void camCalib::solvePNPFromImage(Mat cameraMat,vector<double> distCoeffs )
         if (imgPoints.size() == objectPoints.size())
         {
             solve = solvePnP(objectPoints, imgPoints, cameraMat, distCoeffs, rvecs, tvecs, false, CV_ITERATIVE);
-            cout << "Rvecs: " << rvecs.at(0) * 180 /3.14159265358 << ". " << rvecs.at(1) * 180 /3.14159265358 << ". " << rvecs.at(2) * 180 /3.14159265358 << endl;
+            //cout << "Rvecs: " << rvecs.at(0) * 180 /3.14159265358 << ". " << rvecs.at(1) * 180 /3.14159265358 << ". " << rvecs.at(2) * 180 /3.14159265358 << endl;
             //prepareData(tvecs, rvecs);
             //cout << "TransVec: " <<transMat << endl << " RotVec: " << rotMat <<endl;
             //cout << "Tvecs: " <<tvecs.at(0) << " " << tvecs.at(1) << " " << tvecs.at(2) <<endl;
-            //Rodrigues(rvecs, rotMat);
-            //cout << "Rodrigues: " << rotMat << endl;
+            Rodrigues(rvecs, rotMat);
+            cout<< rotMat <<endl;
+            cout << "Rodrigues: " << -rotMat.at<double>(1,2) << " " << rotMat.at<double>(0,2) << " " << -rotMat.at<double>(0,1) <<endl;
             //rotMat = rotMat.t();
             //Rodrigues(rotMat, rvecs);
             //drawOb.mainGL(tvecs, rvecs);
         }
         if ( (cvWaitKey(1) & 255) == 'e' ) 
-			break;
+            break;
     }
 }
 
@@ -190,7 +203,7 @@ void camCalib::genCamMatrix()
 {
     string name;
     vector<Mat> images;
-    int numberOfImg = 25;
+    int numberOfImg = 7;
     try
     {
         for(int i = 0; i<=numberOfImg; i++)
@@ -212,7 +225,7 @@ void camCalib::genCamMatrix()
     //Obtaining Size
     double w = initIm.cols;
     double h = initIm.rows;
-    Size imageSize(w,h);
+    Size imageSize(h,w);
 
     //initializing objectPoints and imagePoints
     vector<vector<Point3f>> arrayObjectPoints;
@@ -238,7 +251,7 @@ void camCalib::genCamMatrix()
 
     //Initializing distCoeffs
     vector<double> distCoeffs;
-    for(int i=0; i <=8; i++) //distCoeffs can have 8 possible values : Refer OpenCV
+    for(int i=0; i <8; i++) //distCoeffs can have 8 possible values : Refer OpenCV
     {
         distCoeffs.push_back(0.0);
     }
@@ -278,7 +291,7 @@ vector<Point2f> camCalib::obtainImagePoints(Mat gray)
     
     drawChessboardCorners(img, patternsize, Mat(corners), patternfound);
     imshow("Result", img);
-    
+    //cout << "Image Points:" << corners << endl;
     return corners;
 }
 
@@ -287,6 +300,7 @@ Mat camCalib::cameraCalibInitVal(Mat im)
     
     double w = im.cols;
     double h = im.rows;
+    cout<< "Image Size:" << w << ".  " << h << endl;
     Size imageSize(w,h);
 
     vector<vector<Point3f>> arrayObjectPoints;

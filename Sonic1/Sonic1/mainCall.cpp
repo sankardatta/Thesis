@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
@@ -15,6 +16,152 @@ vector<Point2f> cameraMatrix(Mat);
 Mat cameraCalibInitVal(Mat);
 vector<Point2f> obtainImagePoints(Mat);
 void writeIntoFile(Mat, vector<double>);
+
+struct myclass
+{
+    bool operator() (Point3f pt1, Point3f pt2) 
+    { 
+        return (pt1.x < pt2.x);
+    }
+}myobject;
+
+vector<Point3f> readFromCOR(string path)
+{
+    ifstream myFile(path, ios_base::in);
+    double val,x,y,z;
+    int i=0;
+    vector<Point3f> imgFilePoints;
+
+    while(myFile >> val >> x >>y >>z)
+    {
+        imgFilePoints.push_back(Point3f(x,y,z));
+        i++;
+    }
+    return imgFilePoints;
+    }
+
+vector<Point2f> readFromDAT(string path)
+{
+    ifstream myFile(path, ios_base::in);
+    double val,x,y,ex,ey;
+    int i=0;
+    vector<Point3f> imgFilePoints;
+    vector<Point2f> imgPoints;
+    //vector<vector<Point2f>> arrayImgPoints;
+   
+    while(myFile >> val >> x >>y >>ex >>ey)
+    {
+        //cout<<i<<":"<<val << " " <<x << " "<<y<< " "<<ex<< " "<<ey<< endl;
+        imgFilePoints.push_back(Point3f(val,x,y));
+        i++;
+    }
+
+    sort(imgFilePoints.begin(), imgFilePoints.end(), myobject);
+    
+    int count = 0;
+    while(count<i)
+    {
+        imgPoints.push_back( Point2f ( imgFilePoints.at(count).y, imgFilePoints.at(count).z));
+        count++;
+    }
+    //arrayImgPoints.push_back(imgPoints);
+    //return arrayImgPoints;
+    return imgPoints;
+}
+
+void genCamMat()
+{
+    Mat im = imread("C:\\Users\\Sankar\\Desktop\\Calibration\ Reference\\A_Kamera_0.bmp");
+    cout << "Size: "<<im.size()<<endl;
+
+    string path = "C:\\Users\\Sankar\\Desktop\\Calibration\ Reference\\passpTest.cor";
+    vector<vector<Point3f>> arrayObjectPoints;
+    vector<Point3f> objectPoints = readFromCOR(path);
+    arrayObjectPoints.push_back(objectPoints);
+    
+    path = "C:\\Users\\Sankar\\Desktop\\Calibration\ Reference\\Test5.DAT";
+    vector<vector<Point2f>> arrayImgPoints;
+    vector<Point2f> imgPoints = readFromDAT(path);
+    arrayImgPoints.push_back(imgPoints);
+    Size sz(1392,1040);
+    //Size sz(1040,1392);
+    Mat initCameraMat = initCameraMatrix2D(arrayObjectPoints, arrayImgPoints, sz, 1);
+    
+//    initCameraMat.at<double>(0,0) = 16.97;
+//    initCameraMat.at<double>(1,1) = 16.97;
+    cout << "initCameraMat: "<< initCameraMat << endl;
+
+    arrayImgPoints.clear();
+    arrayObjectPoints.clear();
+    path = "C:\\Users\\Sankar\\Desktop\\Calibration\ Reference\\Test";
+    string loc;
+    for(int i = 0; i < 16 ; i++)
+    {
+        if (i == 5 || i == 1 || i == 13)
+            continue;
+        loc = path + to_string(i) + ".DAT";
+        imgPoints = readFromDAT(loc);
+        if(imgPoints.size()==objectPoints.size())
+        {
+            cout << i << "th File data inserted." <<endl;
+            arrayImgPoints.push_back(imgPoints);
+            arrayObjectPoints.push_back(objectPoints);
+        }
+    }
+    vector<double> distCoeffs(2);
+    vector<vector<double>> rvecs, tvecs;
+    //for(int i=0; i <8; i++) //distCoeffs can have 8 possible values : Refer OpenCV
+    //{
+    //    distCoeffs.push_back(0.0);
+    //}
+    TermCriteria criteria=TermCriteria( TermCriteria::COUNT+TermCriteria::EPS, 30, DBL_EPSILON);
+    //getchar();
+    double val = calibrateCamera(arrayObjectPoints, arrayImgPoints, sz, initCameraMat, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);  //criteria);
+
+    cout << "Camera Matrix: " << initCameraMat <<endl;
+    cout << "DistCoeffs: " << distCoeffs.at(0) << " "<< distCoeffs.at(1) <<endl;
+    //cout << "DistCoeffs Size: " << distCoeffs.size() <<endl;
+
+    getchar();
+}
+
+void testWithChessBoard()
+{
+    Mat im = imread("C:\\Users\\Sankar\\Desktop\\ChessBoardCut.jpg");
+    while(1)
+    {
+    CvCapture* capture = cvCaptureFromCAM(0);
+    IplImage* frame;
+    frame = cvQueryFrame( capture );
+    im = Mat(frame);
+    Mat gray;
+    cvtColor(im, gray, CV_BGR2GRAY);
+    Mat dst_norm, dst_norm_scaled;
+    Mat dst = Mat::zeros( gray.size(), CV_32FC1 );
+    int blockSize = 2;
+    int apertureSize = 3;
+    double k = 0.04;
+    cornerHarris( gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
+
+    /// Normalizing
+    normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
+    convertScaleAbs( dst_norm, dst_norm_scaled );
+
+    /// Drawing a circle around corners
+    for( int j = 0; j < dst_norm.rows ; j++ )
+        { for( int i = 0; i < dst_norm.cols; i++ )
+            {
+            if( (int) dst_norm.at<float>(j,i) > 150 )
+                {
+                circle( dst_norm_scaled, Point( i, j ), 5,  Scalar(0), 2, 8, 0 );
+                }
+            }
+        }
+
+    imshow("Corner",dst_norm_scaled);
+    cvWaitKey(1);
+    }
+}
 
 void cameraCalibTakeImages()
 {
@@ -204,17 +351,16 @@ void mainT()
 
 void main()
 {
+    genCamMat();
     //mainT();
-
     //takeImage();
-
     //cameraMatInit();
 
     //glDraws ob = glDraws(800, 800);//startSolvePNP(); 
     //vector<double> t,r;
     //ob.mainGL(t,r);
-
-    camCalib oc = camCalib();
+    //testWithChessBoard();
+    //camCalib oc = camCalib();
 
     //cameraCalib();
 
