@@ -21,6 +21,8 @@ class glCenturai
 public:
     glCenturai(void);
     glCenturai(int, int);
+    void draw(void);
+    void gameLoop(void);
     ~glCenturai(void);
 
 private:

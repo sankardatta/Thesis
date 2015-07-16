@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "geometry.h"
 #include "glDraws.h"
+#include "glCenturai.h"
 #include "camCalib.h"
 
 using namespace std;
@@ -351,7 +352,10 @@ void mainT()
 
 void main()
 {
-    genCamMat();
+    glCenturai ob = glCenturai();
+    ob.gameLoop();
+
+    //genCamMat();
     //mainT();
     //takeImage();
     //cameraMatInit();
