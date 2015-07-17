@@ -41,6 +41,16 @@ glCenturai::~glCenturai(void)
 {
     clean();
 	glfwTerminate();
+    std::cout<<"It's over" <<endl;
+    std::getchar();
+}
+
+void glCenturai::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    cout << "key:" <<key <<" scancode:"<<scancode << " action:"<<action <<" mode:"<<mode <<endl;
+    void * ob = glfwGetWindowUserPointer(window);
+   glCenturai * gl = static_cast<glCenturai *>(ob);
+   gl->testVal++;
 }
 
 void glCenturai::draw()
@@ -63,10 +73,14 @@ void glCenturai::draw()
 void glCenturai::gameLoop()
 {
     //draw();
+    testVal = 0;
+    glfwSetWindowUserPointer(window, this);
+    glfwSetKeyCallback(window, *keyCallback ); 
     while(!glfwWindowShouldClose(window))
     {
         draw();
         glfwPollEvents();
         glfwSwapBuffers(window);
     }
+    cout <<"Total keys:" <<testVal <<endl;
 }

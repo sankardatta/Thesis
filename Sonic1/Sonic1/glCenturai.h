@@ -27,8 +27,10 @@ public:
 
 private:
     void clean(void);
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 public:
+    int testVal;
     GLFWwindow* window;
 };
 
