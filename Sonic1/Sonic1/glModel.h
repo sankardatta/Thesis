@@ -16,25 +16,20 @@
 
 using namespace std;
 
-class glCenturai
+class glModel
 {
 public:
-    glCenturai(void);
-    glCenturai(int, int);
+    glModel(void);
+    glModel(int, int);
     void draw(void);
-    void gameLoop(void);
-    ~glCenturai(void);
-
-private:
-    void clean(void);
-    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
-    static void mouseCallback(GLFWwindow* window, int button, int action, int mode);
+    void opencvHandler(void);
+    ~glModel(void);
 
 public:
     GLFWwindow* window;
 
 private:
-    double xCurPos, yCurPos, initXCur, initYCur;
-    float speed;
+    void clean(void);
+
 };
 

@@ -3,12 +3,18 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/nonfree/features2d.hpp>
+#include <opencv2\features2d\features2d.hpp>
+#include <opencv2\nonfree\nonfree.hpp>
+
 #include "imReadBasics.h"
 #include "utils.h"
 #include "geometry.h"
 #include "glDraws.h"
 #include "glCenturai.h"
 #include "camCalib.h"
+
+#include "glModel.h"
 
 using namespace std;
 using namespace cv;
@@ -350,10 +356,120 @@ void mainT()
 }
 
 
+void featureDetection()
+{
+    //auto start = chrono::high_resolution_clock::now();
+    //cvNamedWindow( "mywindow", CV_WINDOW_AUTOSIZE );
+    Mat im1 = imread("C:\\Users\\Sankar\\Google\ Drive\\cameraOutput\\original.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    Mat im2 = imread("C:\\Users\\Sankar\\Google\ Drive\\cameraOutput\\training.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    //IplImage* image = cvCloneImage(&(IplImage)im1);
+    if(! im1.data || ! im2.data)
+    {
+        int x;
+        cout<< "Couldn't open";
+        cin>>x;
+        exit(0);
+    }
+    //imshow( "mywindow", im2 );
+    //waitKey(0);
+
+    int minHessian = 400;
+
+    SurfFeatureDetector detector(minHessian);
+
+    vector<KeyPoint> keypoints1, keypoints2;
+
+    detector.detect(im1, keypoints1);
+    detector.detect(im2, keypoints2);
+
+    Mat im1_withKeypoints, im2_withKeypoints;
+
+    //drawKeypoints(im1, keypoints1, im1_withKeypoints, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+    //drawKeypoints(im2, keypoints2, im2_withKeypoints, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+
+    //imshow("Keypoints1", im1_withKeypoints);
+    //imshow("Keypoints2", im2_withKeypoints);
+    //waitKey(0);
+
+    SurfDescriptorExtractor extractor;
+    Mat descriptor1, descriptor2;
+
+    extractor.compute( im1, keypoints1, descriptor1);
+    extractor.compute( im2, keypoints2, descriptor2);
+    if (!descriptor1.data)
+    {
+        exit(0);
+    }
+
+    FlannBasedMatcher matcher;
+    std::vector<DMatch> matches;
+    matcher.match(descriptor1, descriptor2, matches);
+
+    double max_dist = 0;
+    double min_dist = 10;
+
+    for(int i=0; i<descriptor1.rows; i++)
+    {
+        double dist = matches[i].distance;
+        if(dist < min_dist) min_dist = dist;
+        if(dist > max_dist) max_dist = dist;
+    }
+
+    cout<<"-- Max dist : "<< max_dist << endl ;
+    cout<<"-- Min dist : "<< min_dist << endl ;
+
+    vector< DMatch > good_matches;
+
+    for( int i = 0; i < descriptor1.rows; i++ )
+    { if( matches[i].distance <= max(3*min_dist, 0.001) )
+        { good_matches.push_back( matches[i]); }
+    }
+
+    Mat img_matches;
+    drawMatches(im1, keypoints1, im2, keypoints2, good_matches, img_matches, Scalar::all(-1), Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+
+    /*namedWindow("Matched keys", WINDOW_NORMAL);
+    imshow("Matched keys", img_matches);
+    waitKey(0);*/
+
+    vector<Point2f> obj;
+    vector<Point2f> scene;
+
+    for(int i=0; i<good_matches.size(); i++)
+    {
+        obj.push_back( keypoints1[ good_matches[i].queryIdx ].pt );
+        scene.push_back( keypoints2[ good_matches[i].trainIdx ].pt );
+    }
+
+    Mat H = findHomography(obj, scene, CV_RANSAC);
+    cout << H << endl;
+    std::vector<Point2f> obj_corners(4);
+    obj_corners[0] = cvPoint(0,0); 
+    obj_corners[1] = cvPoint( im1.cols, 0 );
+    obj_corners[2] = cvPoint( im1.cols, im1.rows );
+    obj_corners[3] = cvPoint( 0, im1.rows );
+    std::vector<Point2f> scene_corners(4);
+    perspectiveTransform( obj_corners, scene_corners, H);
+    line( img_matches, scene_corners[0] + Point2f( im1.cols, 0), scene_corners[1] + Point2f( im1.cols, 0), Scalar(0, 255, 0), 4 );
+    line( img_matches, scene_corners[1] + Point2f( im1.cols, 0), scene_corners[2] + Point2f( im1.cols, 0), Scalar( 0, 255, 0), 4 );
+    line( img_matches, scene_corners[2] + Point2f( im1.cols, 0), scene_corners[3] + Point2f( im1.cols, 0), Scalar( 0, 255, 0), 4 );
+    line( img_matches, scene_corners[3] + Point2f( im1.cols, 0), scene_corners[0] + Point2f( im1.cols, 0), Scalar( 0, 255, 0), 4 );
+
+    namedWindow("Matched keys", WINDOW_NORMAL);
+    imshow("Matched keys", img_matches);
+    waitKey(0);
+
+    glModel glOb = glModel();
+    glOb.opencvHandler();
+
+}
+
 void main()
 {
-    glCenturai ob = glCenturai();
-    ob.gameLoop();
+    featureDetection();
+
+    //glCenturai ob = glCenturai();
+    //ob.gameLoop();
 
     //genCamMat();
     //mainT();
