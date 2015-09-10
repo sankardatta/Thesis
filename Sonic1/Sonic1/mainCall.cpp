@@ -355,6 +355,139 @@ void mainT()
 	}
 }
 
+void takeImage2()
+{
+    char x;
+    Mat im;
+    VideoCapture cap(1);
+    if (!cap.isOpened())
+    {
+        cout<<"CameraCap is not open (press key to exit):"<<endl;
+        cin >> x;
+    }
+    cout<<"starting";
+    while(true)
+    {
+        cap >> im;
+        if(im.data)
+        {
+            imshow("mywindow", im);
+            //waitKey(10);
+            //cout<<"\npress c to capture:";
+            //cin >> x;
+            if ( (cvWaitKey(10) & 255) == 's' )
+            {
+                imwrite("C:\\Users\\Sankar\\Desktop\\matteo.jpg", im);
+                exit(0);
+            }
+            
+        }
+        
+    }
+}
+
+void featureTracking()
+{
+    Mat im1 = imread("C:\\Users\\Sankar\\Desktop\\original.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    Mat im2;
+    //CvCapture* capture = cvCaptureFromCAM(0);
+    int x;
+    VideoCapture cap(1);
+    if (!cap.isOpened())
+    {
+        cout<<"CameraCap is not open (press key to exit):"<<endl;
+        cin >> x;
+    }
+
+    //Keypoint finder
+    int minHessian = 400;
+    SurfFeatureDetector detector(minHessian);
+    vector<KeyPoint> keypoints1, keypoints2;
+    //Descriptor
+    SurfDescriptorExtractor extractor;
+    Mat descriptor1, descriptor2;
+    //Matcher
+    FlannBasedMatcher matcher;
+    std::vector<DMatch> matches;
+
+    //For original image
+    detector.detect(im1, keypoints1);
+    extractor.compute( im1, keypoints1, descriptor1);
+
+    //while variable declarations
+    double max_dist;
+    double min_dist;
+
+    Mat H; //Homography mat
+    std::vector<Point2f> obj_corners(4);
+    obj_corners[0] = cvPoint(0,0); 
+    obj_corners[1] = cvPoint( im1.cols, 0 );
+    obj_corners[2] = cvPoint( im1.cols, im1.rows );
+    obj_corners[3] = cvPoint( 0, im1.rows );
+    
+    Mat frame;
+    while(true)
+    {
+        try
+        {
+            cap >> frame;
+            if (frame.data)
+            {
+                cvtColor(frame, im2, CV_BGR2GRAY);
+                //imshow("frame", im2);
+                //waitKey(0);
+                //for frame image
+                detector.detect(im2, keypoints2);
+                extractor.compute(im2, keypoints2, descriptor2);
+                matcher.match(descriptor1, descriptor2, matches);
+        
+                //min and max distance
+                max_dist = 0;
+                min_dist = 10;
+                for(int i=0; i<descriptor1.rows; i++)
+                {
+                    double dist = matches[i].distance;
+                    if(dist < min_dist) min_dist = dist;
+                    if(dist > max_dist) max_dist = dist;
+                }
+
+                vector< DMatch > good_matches;
+                //good_matches.clear(); //take the declaration outside the loop and make Clear it inside the loop
+                for( int i = 0; i < descriptor1.rows; i++ )
+                { 
+                    if( matches[i].distance <= max(2*min_dist, 0.001) )
+                        { good_matches.push_back( matches[i]); }
+                }
+                vector<Point2f> obj;
+                vector<Point2f> scene;
+
+                for(int i=0; i<good_matches.size(); i++)
+                {
+                    obj.push_back( keypoints1[ good_matches[i].queryIdx ].pt );
+                    scene.push_back( keypoints2[ good_matches[i].trainIdx ].pt );
+                }
+
+                H = findHomography(obj, scene, CV_RANSAC);
+                std::vector<Point2f> scene_corners(4);
+                perspectiveTransform( obj_corners, scene_corners, H);
+                line( frame, scene_corners[0], scene_corners[1], Scalar( 0, 255, 0), 4 );
+                line( frame, scene_corners[1], scene_corners[2], Scalar( 0, 255, 0), 4 );
+                line( frame, scene_corners[2], scene_corners[3], Scalar( 0, 255, 0), 4 );
+                line( frame, scene_corners[3], scene_corners[0], Scalar( 0, 255, 0), 4 );
+
+                imshow("frame", frame);
+                waitKey(1);
+            }
+        }
+
+        catch(...)
+        {
+            cout << "Encountered an Error" << endl;
+        }
+    }
+        
+}
+    
 
 void featureDetection()
 {
@@ -466,8 +599,9 @@ void featureDetection()
 
 void main()
 {
-    featureDetection();
-
+    //featureDetection();
+    featureTracking();
+    //takeImage2();
     //glCenturai ob = glCenturai();
     //ob.gameLoop();
 
