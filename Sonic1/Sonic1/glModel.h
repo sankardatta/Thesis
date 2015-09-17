@@ -1,5 +1,8 @@
 #pragma once
-#define GLEW_STATIC
+#include <opencv2/highgui/highgui.hpp>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <math.h>
 #include <iostream>
 #include <thread>
 #include <string>
@@ -12,24 +15,44 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "glm/ext.hpp"
 #include <SOIL.h>
 
 using namespace std;
+using namespace cv;
 
 class glModel
 {
 public:
     glModel(void);
     glModel(int, int);
-    void draw(void);
-    void opencvHandler(void);
+    void opencvHandler(Mat HomographyMatrix, int infLoop);
     ~glModel(void);
 
 public:
-    GLFWwindow* window;
+    //testing methods
+    void glmTest(void);
+    void draw(void);
+public:
+    //GLFWwindow* window;
 
 private:
+    void varInit();
     void clean(void);
-
+    GLuint compileShaders(GLuint, string&);
+    void loadShaders(const char*, string&);
+    void initShaders(const char*, const char*);
+    void cameraPoseFromHomography(const Mat& H, Mat& pose);
+    
+private:
+    GLuint vs, fs, program;
+    int w, h;
+    glm::mat4 cvToGL;
+    int texWidth, texHeight;
+    GLint colorAttrib;
+    unsigned char* image;
+    GLint posAttrib, MatrixID;
+    GLFWwindow* window;
+    //Mat pose;
 };
 

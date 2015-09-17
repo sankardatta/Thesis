@@ -142,6 +142,7 @@
     <ClCompile Include="imReadBasics.cpp" />
     <ClCompile Include="mainCall.cpp" />
     <ClCompile Include="glDraws.cpp" />
+    <ClCompile Include="PCClock.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="glModel.h" />
     <ClInclude Include="imReadBasics.h" />
     <ClInclude Include="glDraws.h" />
+    <ClInclude Include="PCClock.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

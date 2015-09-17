@@ -7,6 +7,8 @@
 #include <opencv2\features2d\features2d.hpp>
 #include <opencv2\nonfree\nonfree.hpp>
 
+#include "PCClock.h"
+
 #include "imReadBasics.h"
 #include "utils.h"
 #include "geometry.h"
@@ -359,7 +361,7 @@ void takeImage2()
 {
     char x;
     Mat im;
-    VideoCapture cap(1);
+    VideoCapture cap(0);
     if (!cap.isOpened())
     {
         cout<<"CameraCap is not open (press key to exit):"<<endl;
@@ -392,7 +394,7 @@ void featureTracking()
     Mat im2;
     //CvCapture* capture = cvCaptureFromCAM(0);
     int x;
-    VideoCapture cap(1);
+    VideoCapture cap(0);
     if (!cap.isOpened())
     {
         cout<<"CameraCap is not open (press key to exit):"<<endl;
@@ -426,6 +428,23 @@ void featureTracking()
     obj_corners[3] = cvPoint( 0, im1.rows );
     
     Mat frame;
+    
+    while(true)
+    {
+        try
+        {
+            cap >> frame;
+            if (frame.data)
+                break;
+        }
+        catch(...)
+        {
+        }
+        //glModel glOb = glModel();
+    }
+    cout << "cols, rows:" << frame.cols << "," << frame.rows << endl;
+    glModel glOb = glModel(frame.cols, frame.rows);
+    //glOb.draw();
     while(true)
     {
         try
@@ -476,7 +495,10 @@ void featureTracking()
                 line( frame, scene_corners[3], scene_corners[0], Scalar( 0, 255, 0), 4 );
 
                 imshow("frame", frame);
-                waitKey(1);
+                //waitKey(1);
+                cout << "Homography:" << H <<endl;
+                //break;
+                glOb.opencvHandler(H, 0);
             }
         }
 
@@ -485,6 +507,7 @@ void featureTracking()
             cout << "Encountered an Error" << endl;
         }
     }
+    //glOb.opencvHandler(H);
         
 }
     
@@ -582,6 +605,15 @@ void featureDetection()
     obj_corners[2] = cvPoint( im1.cols, im1.rows );
     obj_corners[3] = cvPoint( 0, im1.rows );
     std::vector<Point2f> scene_corners(4);
+    
+    //H.at<double>(0,0) = 1.0; H.at<double>(0,1) = 0.0; H.at<double>(0,2) = 50.0;
+
+    //H.at<double>(1,0) = 0.5; H.at<double>(1,1) = 0.3; H.at<double>(1,2) = 100.0;
+
+    //H.at<double>(2,0) = 0.4; H.at<double>(2,1) = 0.6; H.at<double>(2,2) = 1.0;
+    
+    //cout << H << endl;
+
     perspectiveTransform( obj_corners, scene_corners, H);
     line( img_matches, scene_corners[0] + Point2f( im1.cols, 0), scene_corners[1] + Point2f( im1.cols, 0), Scalar(0, 255, 0), 4 );
     line( img_matches, scene_corners[1] + Point2f( im1.cols, 0), scene_corners[2] + Point2f( im1.cols, 0), Scalar( 0, 255, 0), 4 );
@@ -592,16 +624,25 @@ void featureDetection()
     imshow("Matched keys", img_matches);
     waitKey(0);
 
-    glModel glOb = glModel();
-    glOb.opencvHandler();
+    glModel glOb = glModel(im2.cols, im2.rows);
+    glOb.opencvHandler(H, 1);
 
 }
 
 void main()
 {
+
+    glModel glOb = glModel();
+    glOb.glmTest();
+    //glOb.opencvHandler();
+    //PCClock clck = PCClock();
+    //clck.start();
+    //cout << "Time Elapsed:" << clck.stop();
+
     //featureDetection();
-    featureTracking();
+    //featureTracking();
     //takeImage2();
+
     //glCenturai ob = glCenturai();
     //ob.gameLoop();
 
