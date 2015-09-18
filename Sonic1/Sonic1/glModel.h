@@ -42,7 +42,9 @@ private:
     GLuint compileShaders(GLuint, string&);
     void loadShaders(const char*, string&);
     void initShaders(const char*, const char*);
-    void cameraPoseFromHomography(const Mat& H, Mat& pose);
+    Mat calModelView(Mat H);
+    glm::mat4 cameraInverse();
+    void cameraPoseFromHomography(Mat& H, Mat& pose);
     
 private:
     GLuint vs, fs, program;

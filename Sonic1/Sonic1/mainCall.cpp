@@ -444,6 +444,7 @@ void featureTracking()
     }
     cout << "cols, rows:" << frame.cols << "," << frame.rows << endl;
     glModel glOb = glModel(frame.cols, frame.rows);
+    //glModel glOb = glModel();
     //glOb.draw();
     while(true)
     {
@@ -632,15 +633,15 @@ void featureDetection()
 void main()
 {
 
-    glModel glOb = glModel();
-    glOb.glmTest();
+    //glModel glOb = glModel();
+    //glOb.glmTest();
     //glOb.opencvHandler();
     //PCClock clck = PCClock();
     //clck.start();
     //cout << "Time Elapsed:" << clck.stop();
 
     //featureDetection();
-    //featureTracking();
+    featureTracking();
     //takeImage2();
 
     //glCenturai ob = glCenturai();
