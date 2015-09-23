@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camCalib.cpp" />
+    <ClCompile Include="colorSegmentation.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="glCenturai.cpp" />
     <ClCompile Include="glModel.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camCalib.h" />
+    <ClInclude Include="colorSegmentation.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="glCenturai.h" />
     <ClInclude Include="glModel.h" />
@@ -171,6 +173,7 @@
     <Xml Include="calibInfo.xml">
       <SubType>Designer</SubType>
     </Xml>
+    <Xml Include="hsvValues.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

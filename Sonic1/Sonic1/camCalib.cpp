@@ -373,6 +373,7 @@ void camCalib::readCalibFile(Mat& cameraMat, vector<double>& distCoeffs)
     cout << "dist coeffs:" << distCoeffs.at(0) << endl;
     fs.release();
 }
+
 void camCalib::prepareData(vector<double> tvec, vector<double> rvec)
 {
     rotMat = Mat(rvec);

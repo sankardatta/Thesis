@@ -15,8 +15,8 @@
 #include "glDraws.h"
 #include "glCenturai.h"
 #include "camCalib.h"
-
 #include "glModel.h"
+#include "colorSegmentation.h"
 
 using namespace std;
 using namespace cv;
@@ -630,6 +630,12 @@ void featureDetection()
 
 }
 
+void colorSeg()
+{
+    colorSegmentation cS = colorSegmentation(0);
+    cS.readFrame();
+}
+
 void main()
 {
 
@@ -641,8 +647,10 @@ void main()
     //cout << "Time Elapsed:" << clck.stop();
 
     //featureDetection();
-    featureTracking();
+    //featureTracking();
     //takeImage2();
+
+    colorSeg();
 
     //glCenturai ob = glCenturai();
     //ob.gameLoop();

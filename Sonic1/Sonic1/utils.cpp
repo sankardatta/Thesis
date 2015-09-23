@@ -1,6 +1,4 @@
-#include<iostream>
-#include "opencv2/imgproc/imgproc.hpp"
-#include <opencv2/highgui/highgui.hpp>
+
 #include "utils.h"
 
 using namespace std;
@@ -8,6 +6,29 @@ using namespace cv;
 
 utils::utils(void)
 {
+}
+
+void utils::readFromFile(string fileName, string name, vector<double>& data)
+{
+    FileStorage fs(fileName, FileStorage::READ);
+
+    fs[name] >> data;
+    //fs["distCoeffs"] >> distCoeffs;
+
+    //cout << "camera mat:" << cameraMat << endl;
+    //cout << "dist coeffs:" << distCoeffs.at(0) << endl;
+    fs.release();
+}
+
+void utils::writeIntoFile(string fileName, vector<string> name, vector<vector<double>> data)
+{
+    FileStorage fs(fileName, FileStorage::WRITE);
+    for(int i=0; i < data.size(); i++)
+    {
+        fs << name.at(i) << data.at(i);
+    }
+
+    fs.release();
 }
 
 string utils::type2str(int type) 
