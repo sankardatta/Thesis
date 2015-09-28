@@ -630,10 +630,37 @@ void featureDetection()
 
 }
 
+void createImage()
+{
+    int col=1080;
+    int row=640;
+    cout << "Red: ";
+    int red;
+    cin >> red;
+
+    cout << endl<< "Blue: ";
+    int blue;
+    cin >> blue;
+
+    cout << endl<< "Green: ";
+    int green;
+    cin >> green;
+    Mat r = Mat(row,col,CV_8UC3, Scalar(blue,green,red));
+
+    imshow("fafa", r);
+    waitKey(0);
+}
+
 void colorSeg()
 {
     colorSegmentation cS = colorSegmentation(0);
-    cS.readFrame();
+    char c;
+    cout << "Record HSV? (y/n): ";
+    cin >> c;
+    if (c=='y')
+        cS.readFrame();
+    else if(c=='n')
+        cS.trackColor();
 }
 
 void main()
@@ -651,6 +678,7 @@ void main()
     //takeImage2();
 
     colorSeg();
+    //createImage();
 
     //glCenturai ob = glCenturai();
     //ob.gameLoop();
