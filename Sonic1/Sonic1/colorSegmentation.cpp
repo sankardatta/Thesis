@@ -163,25 +163,97 @@ void colorSegmentation::onMouse(int event, int x, int y, int flags, void* obj)
     }
 }
 
+double colorSegmentation::findYOrientation(Point2f A1, Point2f A2, Point2f B1, Point2f B2) //A and B are the two st lines. A1 and A2 are the two ends of the st line
+{
+    float lenA = pixelDistance(A1, A2);
+    float lenB = pixelDistance(B1, B2);
+    float dist = distanceEstimator(A1, A2, B1, B2);
+    double f_x = 623.7274584149;
+    float d1 = f_x * (300/lenA - 1); //considering the real world length of the straight line is 300pixels.
+    float d2 = f_x * (300/lenB - 1);
+    float c = d1- d2;
+    double angle = atan(c / dist) * 180/3.14159265;
+    return angle;
+}
+
+float colorSegmentation::distanceEstimator(Point2f A1, Point2f A2, Point2f B1, Point2f B2)
+{
+    Point2f A, B;
+    A.x = (A1.x + A2.x)/2;
+    A.y = (A1.y + A2.y)/2;
+    B.x = (B1.x + B2.x)/2;
+    B.y = (B1.y + B2.y)/2;
+    return pixelDistance(A,B);
+}
+
+float colorSegmentation:: pixelDistance(Point2f a, Point2f b)
+{
+    float dist = pow((a.x - b.x), 2) + pow((a.y - b.y), 2);
+    dist = sqrt(dist);
+    return dist;
+}
+
 void colorSegmentation::readHsvValues(int hueThres, int satThres)
 {
     forefingerLower = vector<double>(3,100);
-    forefingerUpper = vector<double>(3,200);
+    forefingerUpper = vector<double>(3,210);
+
+    smallfingerLower = vector<double>(3,100);
+    smallfingerUpper = vector<double>(3,210);
+    
+    middlefingerLower = vector<double>(3,100);
+    middlefingerUpper = vector<double>(3,210);
+    
+    ringfingerLower = vector<double>(3,100);
+    ringfingerUpper = vector<double>(3,210);
+
     readFromFile("hsvValues.xml", "Forefinger", forefinger);
     forefingerLower.at(0) = forefinger.at(0) - hueThres;
     forefingerLower.at(1) = forefinger.at(1) - satThres;
     forefingerUpper.at(0) = forefinger.at(0) + hueThres;
     forefingerUpper.at(1) = forefinger.at(1) + satThres;
+
+    readFromFile("hsvValues.xml", "Smallfinger", smallfinger);
+    smallfingerLower.at(0) = smallfinger.at(0) - hueThres;
+    smallfingerLower.at(1) = smallfinger.at(1) - satThres;
+    smallfingerUpper.at(0) = smallfinger.at(0) + hueThres;
+    smallfingerUpper.at(1) = smallfinger.at(1) + satThres;
+
+    readFromFile("hsvValues.xml", "Middlefinger", middlefinger);
+    middlefingerLower.at(0) = middlefinger.at(0) - hueThres;
+    middlefingerLower.at(1) = middlefinger.at(1) - satThres;
+    middlefingerUpper.at(0) = middlefinger.at(0) + hueThres;
+    middlefingerUpper.at(1) = middlefinger.at(1) + satThres;
+
+    readFromFile("hsvValues.xml", "Ringfinger", ringfinger);
+    ringfingerLower.at(0) = ringfinger.at(0) - hueThres;
+    ringfingerLower.at(1) = ringfinger.at(1) - satThres;
+    ringfingerUpper.at(0) = ringfinger.at(0) + hueThres;
+    ringfingerUpper.at(1) = ringfinger.at(1) + satThres;
+
 }
 
 void colorSegmentation::trackColor()
 {
-    readHsvValues(7,10);
+    try
+    {
+        readHsvValues(7,10);
+    }
+    catch(...)
+    {
+        cout<< "Unable to read HSV file." << endl;
+        cin.ignore();
+        exit(0);
+    }
     Moments m;
-    Point2f center;//Point2f(250.0, 250.0);
-    Scalar color = Scalar(1,100,120);
+    Point2f centerForefinger, centerSmallfinger, centerMiddlefinger, centerRingfinger;//Point2f(250.0, 250.0);
+    Scalar colorForefinger = Scalar(1,200,180);
+    Scalar colorSmallFinger = Scalar(100,150,220);
+    Scalar colorMiddleFinger = Scalar(200,120,20);
+    Scalar colorRingFinger = Scalar(22,220,100);
     windowOpen = true;
-    Size kernel= Size(9,9); //should be odd
+    Size kernel= Size(9,9); //should be odd for gaussian
+    Mat trackedIm;
     while (windowOpen)
     {
         cap >> OrgIm;
@@ -191,20 +263,65 @@ void colorSegmentation::trackColor()
         {
             GaussianBlur(OrgIm, blurredIm, kernel, 3, 3);
             cvtColor(blurredIm, HsvIm, CV_BGR2HSV);
+
+            //#1
             inRange(HsvIm, forefingerLower, forefingerUpper, im);
+            im.copyTo(trackedIm);
             try
             {
                 m = moments(im, false);
-                center = Point2f(static_cast<float>(m.m10/m.m00), static_cast<float>(m.m01/m.m00));
-                circle(OrgIm, center, 4, color);
-                imshow("Tracking", im);
-                waitKey(1);
+                centerForefinger = Point2f(static_cast<float>(m.m10/m.m00), static_cast<float>(m.m01/m.m00));
+                circle(OrgIm, centerForefinger, 4, colorForefinger);
             }
             catch(...)
             {
-                imshow("Tracking", im);
-                waitKey(1);
+                cout << "\n Failed to track forefinger. \n";
             }
+            //#2
+            inRange(HsvIm, smallfingerLower, smallfingerUpper, im);
+            trackedIm = trackedIm + im;
+            try
+            {
+                m = moments(im, false);
+                centerSmallfinger = Point2f(static_cast<float>(m.m10/m.m00), static_cast<float>(m.m01/m.m00));
+                circle(OrgIm, centerSmallfinger, 4, colorSmallFinger);
+            }
+            catch(...)
+            {
+                cout << "\n Failed to track smallfinger. \n";
+            }
+            //#3
+            inRange(HsvIm, middlefingerLower, middlefingerUpper, im);
+            trackedIm = trackedIm + im;
+            try
+            {
+                m = moments(im, false);
+                centerMiddlefinger = Point2f(static_cast<float>(m.m10/m.m00), static_cast<float>(m.m01/m.m00));
+                circle(OrgIm, centerMiddlefinger, 4, colorMiddleFinger);
+            }
+            catch(...)
+            {
+                cout << "\n Failed to track middlefinger. \n";
+            }
+            //#4
+            inRange(HsvIm, ringfingerLower, ringfingerUpper, im);
+            trackedIm = trackedIm + im;
+            try
+            {
+                m = moments(im, false);
+                centerRingfinger = Point2f(static_cast<float>(m.m10/m.m00), static_cast<float>(m.m01/m.m00));
+                circle(OrgIm, centerRingfinger, 4, colorRingFinger);
+            }
+            catch(...)
+            {
+                cout << "\n Failed to track Ringfinger. \n";
+            }
+
+            //cout << "Distance1: " << pixelDistance(centerForefinger, centerMiddlefinger) << endl;
+            //cout << "Distance2: " << pixelDistance(centerRingfinger, centerSmallfinger) << endl;
+            cout << "Angle: " << findYOrientation(centerForefinger, centerMiddlefinger, centerRingfinger, centerSmallfinger) << endl;
+            imshow("Tracking", trackedIm);
+            waitKey(1);
             //circle(OrgIm, center, 4, color);
             imshow("Live", OrgIm);
             setMouseCallback("Tracking",  tracking, this);

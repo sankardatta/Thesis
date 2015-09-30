@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <opencv_storage>
 <Forefinger>
-  170. 185. 218.</Forefinger>
+  96. 183. 204.</Forefinger>
 <Middlefinger>
-  23. 157. 210.</Middlefinger>
+  14. 183. 251.</Middlefinger>
 <Ringfinger>
-  32. 85. 183.</Ringfinger>
+  32. 79. 193.</Ringfinger>
 <Smallfinger>
-  15. 186. 241.</Smallfinger>
+  166. 208. 234.</Smallfinger>
 <Thumb>
-  178. 61. 177.</Thumb>
+  22. 61. 225.</Thumb>
 </opencv_storage>
